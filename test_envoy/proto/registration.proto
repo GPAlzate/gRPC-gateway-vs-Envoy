@@ -1,0 +1,52 @@
+syntax = "proto3";
+package housing;
+
+import "google/api/annotations.proto";
+
+service Registration {
+    rpc CreateStudent(Student) returns (StudentResponse){
+        option (google.api.http) = {
+            post: "/students/register"
+            body: "*"
+        };
+    };
+    rpc ReadStudent(StudentRequest) returns (StudentResponse){
+        option (google.api.http) = {
+            get: "/students/{id}"
+        };
+    };
+    rpc UpdateStudent(StudentRequest) returns (StudentResponse){
+        option (google.api.http) = {
+            put: "/students/update/{id}"
+            body: "*"
+        };
+    };
+    rpc DeleteStudent(StudentRequest) returns (StudentResponse){
+        option (google.api.http) = {
+            delete: "/students/delete/{id}"
+        };
+    };
+    rpc ListStudents(Void) returns (stream StudentResponse){
+        option (google.api.http) = {
+            get: "/students"
+        };
+    };
+}
+message Void {}
+
+message Student {
+    int32 id = 1;
+    string name = 2;
+    string dorm = 3;
+}
+
+message StudentRequest {
+    int32 id = 1;
+    bool changeDorm = 2;
+    string new = 3;
+}
+
+message StudentResponse{
+    Student student = 1;
+    bool ok = 2;
+}

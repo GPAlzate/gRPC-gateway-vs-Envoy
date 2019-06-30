@@ -1,0 +1,42 @@
+version: '3'
+services:
+    app:
+        container_name: housing_bridge
+        image:          housing_bridge
+        build:
+            context:    .
+            dockerfile: Dockerfile-python
+        env_file:       .env
+        ports:          
+            - 50051:50051
+        depends_on:
+            - db
+        volumes:
+            - ./app:/app
+
+    envoy:
+        container_name: envoy_bridge
+        image: envoyproxy/envoy-dev
+        build:
+            context:    .
+            dockerfile: Dockerfile-envoy
+        ports:
+            - 4748:4748
+        volumes:
+            - ./envoy.yaml:/etc/envoy.yaml
+            - .:/app
+
+    db:
+        container_name: postgres_bridge
+        image:          postgres
+        restart:        always
+        ports:
+            - 5432:5432
+        expose:
+            - 5432
+        volumes:
+            - dbvolume:/var/lib/postgresql/data
+
+
+volumes:
+    dbvolume:

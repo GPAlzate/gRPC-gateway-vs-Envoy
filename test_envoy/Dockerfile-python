@@ -1,0 +1,10 @@
+FROM python:3.7-slim-stretch
+
+WORKDIR /housing
+COPY . /housing
+
+RUN pip3 install -r requirements.txt
+
+EXPOSE 50051
+
+CMD ["python", "-u", "-m" ,"app.server"]
