@@ -12,7 +12,7 @@ services:
         depends_on:
             - db
         volumes:
-            - ./app:/app
+            - .:/app
 
     envoy:
         container_name: envoy_bridge
