@@ -23,7 +23,7 @@ services:
         ports:
             - 4748:4748
         volumes:
-            - ./envoy.yaml:/etc/envoy.yaml
+            - ./envoy/envoy-front.yaml:/etc/envoy-front.yaml
             - .:/app
 
     db:
