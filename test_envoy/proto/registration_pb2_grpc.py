@@ -39,6 +39,11 @@ class RegistrationStub(object):
         request_serializer=proto_dot_registration__pb2.Void.SerializeToString,
         response_deserializer=proto_dot_registration__pb2.StudentResponse.FromString,
         )
+    self.ClearStudents = channel.unary_unary(
+        '/housing.Registration/ClearStudents',
+        request_serializer=proto_dot_registration__pb2.Void.SerializeToString,
+        response_deserializer=proto_dot_registration__pb2.Void.FromString,
+        )
 
 
 class RegistrationServicer(object):
@@ -80,6 +85,13 @@ class RegistrationServicer(object):
     context.set_details('Method not implemented!')
     raise NotImplementedError('Method not implemented!')
 
+  def ClearStudents(self, request, context):
+    # missing associated documentation comment in .proto file
+    pass
+    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+    context.set_details('Method not implemented!')
+    raise NotImplementedError('Method not implemented!')
+
 
 def add_RegistrationServicer_to_server(servicer, server):
   rpc_method_handlers = {
@@ -107,6 +119,11 @@ def add_RegistrationServicer_to_server(servicer, server):
           servicer.ListStudents,
           request_deserializer=proto_dot_registration__pb2.Void.FromString,
           response_serializer=proto_dot_registration__pb2.StudentResponse.SerializeToString,
+      ),
+      'ClearStudents': grpc.unary_unary_rpc_method_handler(
+          servicer.ClearStudents,
+          request_deserializer=proto_dot_registration__pb2.Void.FromString,
+          response_serializer=proto_dot_registration__pb2.Void.SerializeToString,
       ),
   }
   generic_handler = grpc.method_handlers_generic_handler(

@@ -65,6 +65,7 @@ class RegistrationServicer(registration_pb2_grpc.RegistrationServicer):
         return registration_pb2.StudentResponse(student=student, ok=1)
 
     def UpdateStudent(self, request, context):
+        print(request.changeDorm)
         field = "dorm" if request.changeDorm else "name"
         set_new = f"UPDATE student SET {field}={request.new} WHERE id={request.id} RETURNING *"
         print(set_new)
@@ -95,10 +96,18 @@ class RegistrationServicer(registration_pb2_grpc.RegistrationServicer):
             response = registration_pb2.StudentResponse(student=student, ok=1)
             yield response
 
-    def GetStudent(self, request):
+    def GetStudent(self, request, context):
         self.cur.execute(f"SELECT * FROM student WHERE id={request.id}")
         entry = self.cur.fetchone()
         return registration_pb2.Student(id=entry[0], name=entry[1], dorm = entry[2])
+
+    def ClearStudents(self, request, context):
+        '''
+        No client app for this
+        '''
+        self.cur.execute("TRUNCATE student")
+        return registration_pb2.Void()
+
 
 
 def serve():

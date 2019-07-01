@@ -5,7 +5,7 @@ GATEWAY_FLAGS := -I/usr/local/include -I.. \
 PYTHON_OUT := --python_out=.. --grpc_python_out=..
 
 all:
-	sprof
+	$(sprof)
 	make proto
 	make gostub
 	make proxy

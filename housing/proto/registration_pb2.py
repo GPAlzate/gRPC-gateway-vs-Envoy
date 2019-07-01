@@ -21,7 +21,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='housing',
   syntax='proto3',
   serialized_options=None,
-  serialized_pb=_b('\n\x18proto/registration.proto\x12\x07housing\x1a\x1cgoogle/api/annotations.proto\"\x06\n\x04Void\"1\n\x07Student\x12\n\n\x02id\x18\x01 \x01(\x05\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\x0c\n\x04\x64orm\x18\x03 \x01(\t\"=\n\x0eStudentRequest\x12\n\n\x02id\x18\x01 \x01(\x05\x12\x12\n\nchangeDorm\x18\x02 \x01(\x08\x12\x0b\n\x03new\x18\x03 \x01(\t\"@\n\x0fStudentResponse\x12!\n\x07student\x18\x01 \x01(\x0b\x32\x10.housing.Student\x12\n\n\x02ok\x18\x02 \x01(\x08\x32\xdb\x03\n\x0cRegistration\x12Z\n\rCreateStudent\x12\x10.housing.Student\x1a\x18.housing.StudentResponse\"\x1d\x82\xd3\xe4\x93\x02\x17\"\x12/students/register:\x01*\x12X\n\x0bReadStudent\x12\x17.housing.StudentRequest\x1a\x18.housing.StudentResponse\"\x16\x82\xd3\xe4\x93\x02\x10\x12\x0e/students/{id}\x12\x64\n\rUpdateStudent\x12\x17.housing.StudentRequest\x1a\x18.housing.StudentResponse\" \x82\xd3\xe4\x93\x02\x1a\x1a\x15/students/update/{id}:\x01*\x12\x61\n\rDeleteStudent\x12\x17.housing.StudentRequest\x1a\x18.housing.StudentResponse\"\x1d\x82\xd3\xe4\x93\x02\x17*\x15/students/delete/{id}\x12L\n\x0cListStudents\x12\r.housing.Void\x1a\x18.housing.StudentResponse\"\x11\x82\xd3\xe4\x93\x02\x0b\x12\t/students0\x01\x62\x06proto3')
+  serialized_pb=_b('\n\x18proto/registration.proto\x12\x07housing\x1a\x1cgoogle/api/annotations.proto\"\x06\n\x04Void\"1\n\x07Student\x12\n\n\x02id\x18\x01 \x01(\x05\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\x0c\n\x04\x64orm\x18\x03 \x01(\t\"=\n\x0eStudentRequest\x12\n\n\x02id\x18\x01 \x01(\x05\x12\x12\n\nchangeDorm\x18\x02 \x01(\x08\x12\x0b\n\x03new\x18\x03 \x01(\t\"@\n\x0fStudentResponse\x12!\n\x07student\x18\x01 \x01(\x0b\x32\x10.housing.Student\x12\n\n\x02ok\x18\x02 \x01(\x08\x32\xa3\x04\n\x0cRegistration\x12Z\n\rCreateStudent\x12\x10.housing.Student\x1a\x18.housing.StudentResponse\"\x1d\x82\xd3\xe4\x93\x02\x17\"\x12/students/register:\x01*\x12X\n\x0bReadStudent\x12\x17.housing.StudentRequest\x1a\x18.housing.StudentResponse\"\x16\x82\xd3\xe4\x93\x02\x10\x12\x0e/students/{id}\x12\x64\n\rUpdateStudent\x12\x17.housing.StudentRequest\x1a\x18.housing.StudentResponse\" \x82\xd3\xe4\x93\x02\x1a\x1a\x15/students/update/{id}:\x01*\x12\x61\n\rDeleteStudent\x12\x17.housing.StudentRequest\x1a\x18.housing.StudentResponse\"\x1d\x82\xd3\xe4\x93\x02\x17*\x15/students/delete/{id}\x12L\n\x0cListStudents\x12\r.housing.Void\x1a\x18.housing.StudentResponse\"\x11\x82\xd3\xe4\x93\x02\x0b\x12\t/students0\x01\x12\x46\n\rClearStudents\x12\r.housing.Void\x1a\r.housing.Void\"\x17\x82\xd3\xe4\x93\x02\x11*\x0f/students/clearb\x06proto3')
   ,
   dependencies=[google_dot_api_dot_annotations__pb2.DESCRIPTOR,])
 
@@ -223,7 +223,7 @@ _REGISTRATION = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   serialized_start=256,
-  serialized_end=731,
+  serialized_end=803,
   methods=[
   _descriptor.MethodDescriptor(
     name='CreateStudent',
@@ -269,6 +269,15 @@ _REGISTRATION = _descriptor.ServiceDescriptor(
     input_type=_VOID,
     output_type=_STUDENTRESPONSE,
     serialized_options=_b('\202\323\344\223\002\013\022\t/students'),
+  ),
+  _descriptor.MethodDescriptor(
+    name='ClearStudents',
+    full_name='housing.Registration.ClearStudents',
+    index=5,
+    containing_service=None,
+    input_type=_VOID,
+    output_type=_VOID,
+    serialized_options=_b('\202\323\344\223\002\021*\017/students/clear'),
   ),
 ])
 _sym_db.RegisterServiceDescriptor(_REGISTRATION)

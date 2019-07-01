@@ -96,10 +96,18 @@ class RegistrationServicer(registration_pb2_grpc.RegistrationServicer):
             response = registration_pb2.StudentResponse(student=student, ok=1)
             yield response
 
-    def GetStudent(self, request):
+    def GetStudent(self, request, context):
         self.cur.execute(f"SELECT * FROM student WHERE id={request.id}")
         entry = self.cur.fetchone()
         return registration_pb2.Student(id=entry[0], name=entry[1], dorm = entry[2])
+
+    def ClearStudents(self, request, context):
+        '''
+        No client app for this
+        '''
+        self.cur.execute("TRUNCATE student")
+        return registration_pb2.Void()
+
 
 
 def serve():

@@ -23,7 +23,7 @@ demo_read:
 	http get :4748/students/12345678
 
 demo_update:
-	http put :4748/students/update/12345678 changeDorm=true new="'Silicon Valley'"
+	http put :4748/students/update/12345678 changeDorm=1 new="'Silicon Valley'"
 
 demo_delete:
 	http delete :4748/students/delete/12345678
