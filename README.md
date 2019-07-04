@@ -33,9 +33,9 @@ Represents a student with a unique id, a name, and a dorm
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| id | [int32](#int32) |  |  |
-| name | [string](#string) |  |  |
-| dorm | [string](#string) |  |  |
+| id | [int32](#int32) |  | unique id for each student |
+| name | [string](#string) |  | first and last name of a student |
+| dorm | [string](#string) |  | dorm choice |
 
 
 
@@ -51,9 +51,9 @@ A request made by a client, specifiying id of a student. `changeDorm` and
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| id | [int32](#int32) |  |  |
-| changeDorm | [bool](#bool) |  |  |
-| new | [string](#string) |  |  |
+| id | [int32](#int32) |  | Unique id student query |
+| changeDorm | [bool](#bool) |  | True if the client requests to change the dorm, false to change name |
+| new | [string](#string) |  | The updated value |
 
 
 
@@ -69,8 +69,8 @@ indicating a successful transaction
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| student | [Student](#housing.Student) |  |  |
-| ok | [bool](#bool) |  |  |
+| student | [Student](#housing.Student) |  | The deleted, created, or retrieved student. If response is not `ok`, id = 0, name = dorm = &#34;ERROR&#34; |
+| ok | [bool](#bool) |  | True if transaction is successful, false otherwise |
 
 
 
@@ -98,7 +98,8 @@ Empty message for rpc&#39;s that require no request (clear and list)
 ### Registration
 Defines the services a client can use to register for housing.
 
-RPCs:
+RPC Methods:
+
      CreateStudent   -   adds a new student registration
 
      ReadStudent     -   returns a single student from database given an
@@ -115,9 +116,9 @@ RPCs:
 
 | Method Name | Request Type | Response Type | Description |
 | ----------- | ------------ | ------------- | ------------|
-| CreateStudent | [Student](#housing.Student) | [StudentResponse](#housing.StudentResponse) | Creates a student from a student message. Returns created student with / ok response |
+| CreateStudent | [Student](#housing.Student) | [StudentResponse](#housing.StudentResponse) | Creates a student from a student message. Returns created student with ok response |
 | ReadStudent | [StudentRequest](#housing.StudentRequest) | [StudentResponse](#housing.StudentResponse) | Reads a student, queried by id number. Returns student with ok response |
-| UpdateStudent | [StudentRequest](#housing.StudentRequest) | [StudentResponse](#housing.StudentResponse) | Updates a student&#39;s name or dorm. Specified by `changeDorm` boolean. / Returns new student. |
+| UpdateStudent | [StudentRequest](#housing.StudentRequest) | [StudentResponse](#housing.StudentResponse) | Updates a student&#39;s name or dorm. Specified by `changeDorm` boolean. Returns new student. |
 | DeleteStudent | [StudentRequest](#housing.StudentRequest) | [StudentResponse](#housing.StudentResponse) | Deletes a registration queried by id and returns the deleted student |
 | ListStudents | [Void](#housing.Void) | [StudentResponse](#housing.StudentResponse) stream | Lists all the registered students. Returns a stream of students |
 | ClearStudents | [Void](#housing.Void) | [Void](#housing.Void) | Removes all registered students |

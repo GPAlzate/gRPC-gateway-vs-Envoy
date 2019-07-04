@@ -22,7 +22,6 @@ edits:
 docs:
 	protoc $(DOCS) --doc_out=.. --doc_opt=markdown,README.md proto/registration.proto 
 
-
 demo_list:
 	http get :4748/students
 
