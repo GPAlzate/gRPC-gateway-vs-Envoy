@@ -1,0 +1,7 @@
+Method,Name,# requests,Median response time,Average response time,Min response time,Max response time,Average Content Size,Requests/s
+GET,/students,91,95,181,20,5118,9089,0.80
+POST,: new student,200,11,46,6,5137,80,1.75
+DELETE,: remove student,64,9,11,7,28,76,0.56
+GET,: single student,77,4,8,3,110,0,0.67
+PUT,: update student,53,10,10,7,18,0,0.46
+None,Total,485,11,57,3,5137,1748,4.24

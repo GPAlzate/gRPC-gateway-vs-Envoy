@@ -3,7 +3,28 @@ package housing;
 
 import "google/api/annotations.proto";
 
+/**
+ * Defines the services a client can use to register for housing.
+ *
+ * RPCs:
+ *      CreateStudent   -   adds a new student registration
+ *
+ *      ReadStudent     -   returns a single student from database given an
+ *                          id number
+ *
+ *      UpdateStudent   -   updates either the name or dorm of a student given
+ *                          an id number request
+ *
+ *      DeleteStudent   -   deletes a student given an id number request
+ *
+ *      ListStudent     -   lists all the students in the database
+ *
+ *      ClearStudents   -   clears student registrations (not for client use)
+ */
 service Registration {
+
+    /// Creates a student from a student object. Returns created student with
+    /// an ok response
     rpc CreateStudent(Student) returns (StudentResponse){
         option (google.api.http) = {
             post: "/students/register"

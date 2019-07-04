@@ -96,7 +96,7 @@ class RegistrationServicer(registration_pb2_grpc.RegistrationServicer):
             response = registration_pb2.StudentResponse(student=student, ok=1)
             yield response
 
-    def GetStudent(self, request, context):
+    def GetStudent(self, request):
         self.cur.execute(f"SELECT * FROM student WHERE id={request.id}")
         entry = self.cur.fetchone()
         return registration_pb2.Student(id=entry[0], name=entry[1], dorm = entry[2])

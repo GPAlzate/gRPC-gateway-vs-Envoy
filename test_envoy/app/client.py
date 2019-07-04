@@ -13,7 +13,11 @@ def ClientCreateStudent(stub):
 
     request = registration_pb2.Student(name = name, id = id, dorm = dorm)
     response = stub.CreateStudent(request)
-    print(f"\nCreated\n{response.student}successfully.")
+
+    if not response.ok:
+        print("ID already in use! Please re-enter your ID\n")
+    else:
+        print(f"\nCreated\n{response.student}successfully.")
 
 
 def ClientUpdateStudent(stub):
@@ -21,7 +25,12 @@ def ClientUpdateStudent(stub):
     #ask for id, get student
     id = int(input(ID_PROMPT))
     request = registration_pb2.StudentRequest(id=id)
-    print(f"{stub.ReadStudent(request).student}")
+    response = stub.ReadStudent(request)
+    if not response.ok:
+        print(f"Student with ID {request.id} does not exist!")
+        return
+
+    print(f"{response.student}")
 
     #ask user which field they would like to change, and change it
     request.changeDorm = int(input("Would you like to change\n"
@@ -32,7 +41,9 @@ def ClientUpdateStudent(stub):
     else:
         request.new = "'" + input("Please specify your new dorm preference: ") + "'"
 
-    print(f"{stub.UpdateStudent(request=request)}\nUpdated successfully")
+    response = stub.UpdateStudent(request=request)
+
+    print(f"{response}\nUpdated successfully")
 
 
 def ClientDeleteStudent(stub):
@@ -42,6 +53,12 @@ def ClientDeleteStudent(stub):
         id = int(input(ID_PROMPT))
         request = registration_pb2.StudentRequest(id=id)
         response = stub.ReadStudent(request)
+
+        #error in read - id doesnt exist, so ask again
+        if not response.ok:
+            print(f"Student with ID {request.id} does not exist!")
+            continue
+
         choice = input(f"Student\n{response.student}Confirm delete? [y/N] ")
         if choice == 'y':
             break

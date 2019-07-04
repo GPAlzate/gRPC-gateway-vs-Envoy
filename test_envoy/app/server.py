@@ -1,6 +1,7 @@
 from concurrent import futures
 from app import config
 from proto import registration_pb2, registration_pb2_grpc
+import threading
 
 import time, math, logging
 import grpc
@@ -8,6 +9,8 @@ import psycopg2
 import sys
 
 _ONE_DAY_IN_SECONDS = 60 * 60 * 24
+
+_lock = threading.Lock()
 
 def create_db():
     try:
@@ -18,7 +21,6 @@ def create_db():
                 port = config.PORT,
                 database = config.DATABASE
                 )
-        conn.autocommit = True
 
         print(f"Connect to {config.DATABASE} successful")
         print(sys.version)
@@ -48,66 +50,104 @@ class RegistrationServicer(registration_pb2_grpc.RegistrationServicer):
             id = request.id
             name = request.name
             dorm = request.dorm
-            self.cur.execute("INSERT INTO student (id, name, dorm) "
-                    f"VALUES ({id}, {name}, {dorm})")
             student = registration_pb2.Student(id = id, name = name, dorm = dorm)
+
+            with _lock:
+                try:
+                    self.cur.execute("INSERT INTO student (id, name, dorm) "
+                            f"VALUES ({id}, {name}, {dorm})")
+                except psycopg2.IntegrityError:
+                    self.db.rollback()
+                    return registration_pb2.StudentResponse(student=student, ok=0)
+                else:
+                    self.db.commit()
+                    return registration_pb2.StudentResponse(student=student, ok=1)
         except Exception as e:
-            print(e)
-            return registration_pb2.StudentResponse(student=student, ok=0)
-        else:
-            return registration_pb2.StudentResponse(student=student, ok=1)
+            print(str(e))
     
     def ReadStudent(self, request, context):
-        #get from database
+        #get from database via helper method
         student = self.GetStudent(request)
 
-        #respond back to client with StudentResponse
+        if not student.id:
+            return registration_pb2.StudentResponse(student=student, ok=0)
+
         return registration_pb2.StudentResponse(student=student, ok=1)
 
     def UpdateStudent(self, request, context):
-        print(request.changeDorm)
-        field = "dorm" if request.changeDorm else "name"
-        set_new = f"UPDATE student SET {field}={request.new} WHERE id={request.id} RETURNING *"
-        print(set_new)
-        self.cur.execute(set_new)
-        response = self.cur.fetchone()
-        student = registration_pb2.Student(id=response[0], name=response[1],
-                                            dorm = response[2])
-        #respond back to client with StudentResponse
-        return registration_pb2.StudentResponse(student=student, ok=1)
+        try:
+            field = "dorm" if request.changeDorm else "name"
+            set_new = f"UPDATE student SET {field}={request.new} WHERE id={request.id} RETURNING *"
+            print(set_new)
+
+            with _lock:
+                try:
+                    self.cur.execute(set_new)
+                except psycopg.DatabaseError:
+                    self.db.rollback()
+                    student = registration_pb2.Student(id=0, name="ERROR", dorm="ERROR")
+                    return registration_pb2.StudentResponse(student=student, ok=0)
+                else:
+                    self.db.commit()
+                    response = self.cur.fetchone()
+                    student = registration_pb2.Student(id=response[0], name=response[1],
+                                                        dorm=response[2])
+                    #respond back to client with StudentResponse
+                    return registration_pb2.StudentResponse(student=student, ok=1)
+        except Exception as e:
+            print(str(e))
 
     def DeleteStudent(self, request, context):
-
-        #delete and return
-        self.cur.execute(f"DELETE FROM student WHERE id={request.id} "
-                        "RETURNING *")
-
-        response = self.cur.fetchone()
-        student = registration_pb2.Student(id=response[0], name=response[1],
-                                            dorm = response[2])
-        #respond back to client with StudentResponse
-        return registration_pb2.StudentResponse(student=student, ok=1)
+        try:
+            with _lock:
+                #delete and return
+                try:
+                    self.cur.execute(f"DELETE FROM student WHERE id={request.id} "
+                                    "RETURNING *")
+                except psycopg.DatabaseError:
+                    self.db.rollback()
+                    student = registration_pb2.Student(id=0, name="ERROR", dorm="ERROR")
+                    return registration_pb2.StudentResponse(student=student, ok=0)
+                else:
+                    self.db.commit()
+                    response = self.cur.fetchone()
+                    student = registration_pb2.Student(id=response[0], name=response[1],
+                                                        dorm = response[2])
+                    #respond back to client with StudentResponse
+                    return registration_pb2.StudentResponse(student=student, ok=1)
+        except Exception as e:
+            print(str(e))
 
     def ListStudents(self, request, context):
-        self.cur.execute("SELECT * FROM student")
-        rows = self.cur.fetchall()
-        for row in rows:
-            student = registration_pb2.Student(id=row[0], name=row[1], dorm=row[2])
-            response = registration_pb2.StudentResponse(student=student, ok=1)
-            yield response
+        try:
+            with _lock:
+                self.cur.execute("SELECT * FROM student")
+                rows = self.cur.fetchall()
+                for row in rows:
+                    student = registration_pb2.Student(id=row[0], name=row[1], dorm=row[2])
+                    response = registration_pb2.StudentResponse(student=student, ok=1)
+                    yield response
+        except Exception as e:
+            print(str(e))
 
     def GetStudent(self, request):
-        self.cur.execute(f"SELECT * FROM student WHERE id={request.id}")
-        entry = self.cur.fetchone()
-        return registration_pb2.Student(id=entry[0], name=entry[1], dorm = entry[2])
+        try:
+            with _lock:
+                self.cur.execute(f"SELECT * FROM student WHERE id={request.id}")
+                entry = self.cur.fetchone()
+                if entry is None:
+                    return registration_pb2.Student(id=0, name="ERROR", dorm="ERROR")
+                return registration_pb2.Student(id=entry[0], name=entry[1], dorm=entry[2])
+        except Exception as e:
+            print(str(e))
 
     def ClearStudents(self, request, context):
         '''
         No client app for this
         '''
         self.cur.execute("TRUNCATE student")
+        self.db.commit()
         return registration_pb2.Void()
-
 
 
 def serve():
