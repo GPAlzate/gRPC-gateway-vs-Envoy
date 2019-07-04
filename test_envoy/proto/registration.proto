@@ -23,55 +23,81 @@ import "google/api/annotations.proto";
  */
 service Registration {
 
-    /// Creates a student from a student object. Returns created student with
-    /// an ok response
+    /// Creates a student from a student message. Returns created student with
+    /// ok response
     rpc CreateStudent(Student) returns (StudentResponse){
         option (google.api.http) = {
             post: "/students/register"
             body: "*"
         };
     };
+
+    /// Reads a student, queried by id number. Returns student with ok response
     rpc ReadStudent(StudentRequest) returns (StudentResponse){
         option (google.api.http) = {
             get: "/students/{id}"
         };
     };
+
+    /// Updates a student's name or dorm. Specified by `changeDorm` boolean.
+    /// Returns new student.
     rpc UpdateStudent(StudentRequest) returns (StudentResponse){
         option (google.api.http) = {
             put: "/students/update/{id}"
             body: "*"
         };
     };
+
+    /// Deletes a registration queried by id and returns the deleted student
     rpc DeleteStudent(StudentRequest) returns (StudentResponse){
         option (google.api.http) = {
             delete: "/students/delete/{id}"
         };
     };
+
+    /// Lists all the registered students. Returns a stream of students
     rpc ListStudents(Void) returns (stream StudentResponse){
         option (google.api.http) = {
             get: "/students"
         };
     };
+
+    /// Removes all registered students
     rpc ClearStudents(Void) returns (Void){
         option (google.api.http) = {
             delete: "/students/clear"
         };
     };
 }
+
+/**
+ * Empty message for rpc's that require no request (clear and list)
+ */
 message Void {}
 
+/**
+ * Represents a student with a unique id, a name, and a dorm
+ */
 message Student {
     int32 id = 1;
     string name = 2;
     string dorm = 3;
 }
 
+/**
+ * A request made by a client, specifiying id of a student. `changeDorm` and 
+ * `new` are set when updating a student.
+ */
 message StudentRequest {
     int32 id = 1;
     bool changeDorm = 2;
     string new = 3;
 }
 
+/**
+ * A response sent by a server, returning a student message and a boolean field
+ * indicating a successful transaction
+ */
 message StudentResponse{
     Student student = 1;
     bool ok = 2;

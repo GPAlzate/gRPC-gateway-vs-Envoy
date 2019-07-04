@@ -37,6 +37,13 @@ services:
         volumes:
             - dbvolume:/var/lib/postgresql/data
 
+              #    docs:
+              #        container_name: protodocs
+              # image:          pseudomuto/protoc-gen-doc
+              #   volumes:
+              #    - ./proto/registration.proto:/protos/registration.proto
+              #command: --doc_opt=markdown,docs.md --proto_path=/protos/registration.proto /protos/registration.proto
+
 
 volumes:
     dbvolume:

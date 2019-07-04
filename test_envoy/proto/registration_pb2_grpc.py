@@ -5,8 +5,24 @@ from proto import registration_pb2 as proto_dot_registration__pb2
 
 
 class RegistrationStub(object):
-  # missing associated documentation comment in .proto file
-  pass
+  """*
+  Defines the services a client can use to register for housing.
+
+  RPCs:
+  CreateStudent   -   adds a new student registration
+
+  ReadStudent     -   returns a single student from database given an
+  id number
+
+  UpdateStudent   -   updates either the name or dorm of a student given
+  an id number request
+
+  DeleteStudent   -   deletes a student given an id number request
+
+  ListStudent     -   lists all the students in the database
+
+  ClearStudents   -   clears student registrations (not for client use)
+  """
 
   def __init__(self, channel):
     """Constructor.
@@ -47,47 +63,65 @@ class RegistrationStub(object):
 
 
 class RegistrationServicer(object):
-  # missing associated documentation comment in .proto file
-  pass
+  """*
+  Defines the services a client can use to register for housing.
+
+  RPCs:
+  CreateStudent   -   adds a new student registration
+
+  ReadStudent     -   returns a single student from database given an
+  id number
+
+  UpdateStudent   -   updates either the name or dorm of a student given
+  an id number request
+
+  DeleteStudent   -   deletes a student given an id number request
+
+  ListStudent     -   lists all the students in the database
+
+  ClearStudents   -   clears student registrations (not for client use)
+  """
 
   def CreateStudent(self, request, context):
-    # missing associated documentation comment in .proto file
-    pass
+    """/ Creates a student from a student message. Returns created student with
+    / ok response
+    """
     context.set_code(grpc.StatusCode.UNIMPLEMENTED)
     context.set_details('Method not implemented!')
     raise NotImplementedError('Method not implemented!')
 
   def ReadStudent(self, request, context):
-    # missing associated documentation comment in .proto file
-    pass
+    """/ Reads a student, queried by id number. Returns student with ok response
+    """
     context.set_code(grpc.StatusCode.UNIMPLEMENTED)
     context.set_details('Method not implemented!')
     raise NotImplementedError('Method not implemented!')
 
   def UpdateStudent(self, request, context):
-    # missing associated documentation comment in .proto file
-    pass
+    """/ Updates a student's name or dorm. Specified by `changeDorm` boolean.
+    / Returns new student.
+    """
     context.set_code(grpc.StatusCode.UNIMPLEMENTED)
     context.set_details('Method not implemented!')
     raise NotImplementedError('Method not implemented!')
 
   def DeleteStudent(self, request, context):
-    # missing associated documentation comment in .proto file
-    pass
+    """/ Deletes a registration queried by id and returns the deleted student
+    """
     context.set_code(grpc.StatusCode.UNIMPLEMENTED)
     context.set_details('Method not implemented!')
     raise NotImplementedError('Method not implemented!')
 
   def ListStudents(self, request, context):
-    # missing associated documentation comment in .proto file
-    pass
+    """/ Lists all the registered students. Returns a stream of students
+    """
     context.set_code(grpc.StatusCode.UNIMPLEMENTED)
     context.set_details('Method not implemented!')
     raise NotImplementedError('Method not implemented!')
 
   def ClearStudents(self, request, context):
-    # missing associated documentation comment in .proto file
-    pass
+    """/ Removes all registered students
+    """
     context.set_code(grpc.StatusCode.UNIMPLEMENTED)
     context.set_details('Method not implemented!')
     raise NotImplementedError('Method not implemented!')
