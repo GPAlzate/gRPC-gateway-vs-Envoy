@@ -6,7 +6,7 @@ import "google/api/annotations.proto";
 /**
  * Defines the services a client can use to register for housing.
  *
- * RPCs:
+ * RPC Methods:
  *
  *      CreateStudent   -   adds a new student registration
  *
@@ -81,13 +81,13 @@ message Void {}
  */
 message Student {
     
-    /// unique id for each student
+    /** unique id for each student */
     int32 id = 1;
 
-    /// first and last name of a student
+    /** first and last name of a student */
     string name = 2;
 
-    /// dorm choice
+    /** dorm choice */
     string dorm = 3;
 }
 
@@ -97,13 +97,13 @@ message Student {
  */
 message StudentRequest {
 
-    /// Unique id student query
+    /** Unique id student query */
     int32 id = 1;
 
-    /// True if the client requests to change the dorm, false to change name
+    /** True if the client requests to change the dorm, false to change name */
     bool changeDorm = 2;
 
-    /// The updated value
+    /** The updated value */
     string new = 3;
 }
 
@@ -113,10 +113,12 @@ message StudentRequest {
  */
 message StudentResponse{
 
-    /// The deleted, created, or retrieved student. If response is not `ok`,
-    // id = 0, name = dorm = "ERROR"
+    /**
+     * The deleted, created, or retrieved student. If response is not `ok`,
+     * id = 0, name = dorm = "ERROR"
+     */
     Student student = 1;
 
-    /// True if transaction is successful, false otherwise
+    /** True if transaction is successful, false otherwise */
     bool ok = 2;
 }
