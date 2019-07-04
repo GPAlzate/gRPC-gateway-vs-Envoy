@@ -7,6 +7,7 @@ import "google/api/annotations.proto";
  * Defines the services a client can use to register for housing.
  *
  * RPCs:
+ *
  *      CreateStudent   -   adds a new student registration
  *
  *      ReadStudent     -   returns a single student from database given an
@@ -24,7 +25,7 @@ import "google/api/annotations.proto";
 service Registration {
 
     /// Creates a student from a student message. Returns created student with
-    /// ok response
+    // ok response
     rpc CreateStudent(Student) returns (StudentResponse){
         option (google.api.http) = {
             post: "/students/register"
@@ -40,7 +41,7 @@ service Registration {
     };
 
     /// Updates a student's name or dorm. Specified by `changeDorm` boolean.
-    /// Returns new student.
+    // Returns new student.
     rpc UpdateStudent(StudentRequest) returns (StudentResponse){
         option (google.api.http) = {
             put: "/students/update/{id}"
@@ -79,8 +80,14 @@ message Void {}
  * Represents a student with a unique id, a name, and a dorm
  */
 message Student {
+    
+    /// unique id for each student
     int32 id = 1;
+
+    /// first and last name of a student
     string name = 2;
+
+    /// dorm choice
     string dorm = 3;
 }
 
@@ -89,8 +96,14 @@ message Student {
  * `new` are set when updating a student.
  */
 message StudentRequest {
+
+    /// Unique id student query
     int32 id = 1;
+
+    /// True if the client requests to change the dorm, false to change name
     bool changeDorm = 2;
+
+    /// The updated value
     string new = 3;
 }
 
@@ -99,6 +112,11 @@ message StudentRequest {
  * indicating a successful transaction
  */
 message StudentResponse{
+
+    /// The deleted, created, or retrieved student. If response is not `ok`,
+    // id = 0, name = dorm = "ERROR"
     Student student = 1;
+
+    /// True if transaction is successful, false otherwise
     bool ok = 2;
 }
