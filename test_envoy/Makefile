@@ -4,3 +4,4 @@ DOCS := -I. -I/Users/GabeAlzate/go/src/ \
 
 docs:
 	protoc $(DOCS) --doc_out=.. --doc_opt=markdown,README.md proto/registration.proto 
+	protoc $(DOCS) --doc_out=.. --doc_opt=html,index.html proto/registration.proto 

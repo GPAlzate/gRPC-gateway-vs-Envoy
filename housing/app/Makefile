@@ -1,11 +1,9 @@
-GATEWAY_FLAGS := -I/usr/local/include -I.. \
-					-I$(GOPATH)/src \
+GATEWAY_FLAGS := -I.. -I$(GOPATH)/src \
 					-I$(GOPATH)/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis
 
 PYTHON_OUT := --python_out=.. --grpc_python_out=..
 
 all:
-	$(sprof)
 	make proto
 	make gostub
 	make proxy

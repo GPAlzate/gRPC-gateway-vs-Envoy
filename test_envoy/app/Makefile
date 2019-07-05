@@ -1,26 +1,16 @@
-INCLUDE_FLAGS := -I/usr/local/include -I.. \
-					--include_imports --include_source_info \
+INCLUDE_FLAGS := -I.. --include_imports --include_source_info \
 					-I$(GOPATH)/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis
-
-DOCS := -I. -I/Users/GabeAlzate/go/src/ \
-			-I/Users/GabeAlzate/go/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis \
-			--plugin=protoc-gen-doc=/Users/GabeAlzate/go/bin/protoc-gen-doc \
-
 
 OUTPUT := --python_out=.. --grpc_python_out=.. --descriptor_set_out=../proto/registration.pb
 
 all:
 	make proto
-	make docs
 
 proto:
 	python3 -m grpc_tools.protoc $(INCLUDE_FLAGS) $(OUTPUT) ../proto/registration.proto
 
 edits:
 	vim -p ../{*.yaml,Dockerfile*} client.py server.py
-
-docs:
-	protoc $(DOCS) --doc_out=.. --doc_opt=markdown,README.md proto/registration.proto 
 
 demo_list:
 	http get :4748/students

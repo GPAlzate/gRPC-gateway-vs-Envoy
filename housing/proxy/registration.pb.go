@@ -25,6 +25,8 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
+//*
+// Empty message for rpc's that require no request (clear and list)
 type Void struct {
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
@@ -56,9 +58,14 @@ func (m *Void) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_Void proto.InternalMessageInfo
 
+//*
+// Represents a student with a unique id, a name, and a dorm
 type Student struct {
-	Id                   int32    `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
-	Name                 string   `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	//* unique id for each student
+	Id int32 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	//* first and last name of a student
+	Name string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	//* dorm choice
 	Dorm                 string   `protobuf:"bytes,3,opt,name=dorm,proto3" json:"dorm,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
@@ -111,9 +118,15 @@ func (m *Student) GetDorm() string {
 	return ""
 }
 
+//*
+// A request made by a client, specifiying id of a student. `changeDorm` and
+// `new` are set when updating a student.
 type StudentRequest struct {
-	Id                   int32    `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
-	ChangeDorm           bool     `protobuf:"varint,2,opt,name=changeDorm,proto3" json:"changeDorm,omitempty"`
+	//* Unique id student query
+	Id int32 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	//* True if the client requests to change the dorm, false to change name
+	ChangeDorm bool `protobuf:"varint,2,opt,name=changeDorm,proto3" json:"changeDorm,omitempty"`
+	//* The updated value
 	New                  string   `protobuf:"bytes,3,opt,name=new,proto3" json:"new,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
@@ -166,8 +179,15 @@ func (m *StudentRequest) GetNew() string {
 	return ""
 }
 
+//*
+// A response sent by a server, returning a student message and a boolean field
+// indicating a successful transaction
 type StudentResponse struct {
-	Student              *Student `protobuf:"bytes,1,opt,name=student,proto3" json:"student,omitempty"`
+	//*
+	// The deleted, created, or retrieved student. If response is not `ok`,
+	// id = 0, name = dorm = "ERROR"
+	Student *Student `protobuf:"bytes,1,opt,name=student,proto3" json:"student,omitempty"`
+	//* True if transaction is successful, false otherwise
 	Ok                   bool     `protobuf:"varint,2,opt,name=ok,proto3" json:"ok,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
@@ -263,11 +283,19 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type RegistrationClient interface {
+	/// Creates a student from a student message. Returns created student with
+	// ok response
 	CreateStudent(ctx context.Context, in *Student, opts ...grpc.CallOption) (*StudentResponse, error)
+	/// Reads a student, queried by id number. Returns student with ok response
 	ReadStudent(ctx context.Context, in *StudentRequest, opts ...grpc.CallOption) (*StudentResponse, error)
+	/// Updates a student's name or dorm. Specified by `changeDorm` boolean.
+	// Returns new student.
 	UpdateStudent(ctx context.Context, in *StudentRequest, opts ...grpc.CallOption) (*StudentResponse, error)
+	/// Deletes a registration queried by id and returns the deleted student
 	DeleteStudent(ctx context.Context, in *StudentRequest, opts ...grpc.CallOption) (*StudentResponse, error)
+	/// Lists all the registered students. Returns a stream of students
 	ListStudents(ctx context.Context, in *Void, opts ...grpc.CallOption) (Registration_ListStudentsClient, error)
+	/// Removes all registered students
 	ClearStudents(ctx context.Context, in *Void, opts ...grpc.CallOption) (*Void, error)
 }
 
@@ -358,11 +386,19 @@ func (c *registrationClient) ClearStudents(ctx context.Context, in *Void, opts .
 
 // RegistrationServer is the server API for Registration service.
 type RegistrationServer interface {
+	/// Creates a student from a student message. Returns created student with
+	// ok response
 	CreateStudent(context.Context, *Student) (*StudentResponse, error)
+	/// Reads a student, queried by id number. Returns student with ok response
 	ReadStudent(context.Context, *StudentRequest) (*StudentResponse, error)
+	/// Updates a student's name or dorm. Specified by `changeDorm` boolean.
+	// Returns new student.
 	UpdateStudent(context.Context, *StudentRequest) (*StudentResponse, error)
+	/// Deletes a registration queried by id and returns the deleted student
 	DeleteStudent(context.Context, *StudentRequest) (*StudentResponse, error)
+	/// Lists all the registered students. Returns a stream of students
 	ListStudents(*Void, Registration_ListStudentsServer) error
+	/// Removes all registered students
 	ClearStudents(context.Context, *Void) (*Void, error)
 }
 

@@ -8,7 +8,8 @@ class RegistrationStub(object):
   """*
   Defines the services a client can use to register for housing.
 
-  RPCs:
+  RPC Methods:
+
   CreateStudent   -   adds a new student registration
 
   ReadStudent     -   returns a single student from database given an
@@ -66,7 +67,8 @@ class RegistrationServicer(object):
   """*
   Defines the services a client can use to register for housing.
 
-  RPCs:
+  RPC Methods:
+
   CreateStudent   -   adds a new student registration
 
   ReadStudent     -   returns a single student from database given an
@@ -84,7 +86,7 @@ class RegistrationServicer(object):
 
   def CreateStudent(self, request, context):
     """/ Creates a student from a student message. Returns created student with
-    / ok response
+    ok response
     """
     context.set_code(grpc.StatusCode.UNIMPLEMENTED)
     context.set_details('Method not implemented!')
@@ -99,7 +101,7 @@ class RegistrationServicer(object):
 
   def UpdateStudent(self, request, context):
     """/ Updates a student's name or dorm. Specified by `changeDorm` boolean.
-    / Returns new student.
+    Returns new student.
     """
     context.set_code(grpc.StatusCode.UNIMPLEMENTED)
     context.set_details('Method not implemented!')
