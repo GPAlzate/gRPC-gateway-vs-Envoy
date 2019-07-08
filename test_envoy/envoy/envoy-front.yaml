@@ -27,6 +27,7 @@ static_resources:
                     prefix: "/"
                   route:
                     cluster: app
+                    num_retries: "5"
             http_filters:
               - name: envoy.grpc_http1_bridge
               - name: envoy.grpc_json_transcoder
