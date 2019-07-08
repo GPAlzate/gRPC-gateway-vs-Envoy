@@ -1,0 +1,6 @@
+FROM golang:latest
+
+COPY /Users/GabeAlzate/Desktop/gRPC-gateway-vs-Envoy/housing/ /go/src/app/
+WORKDIR /go/src/app
+
+CMD ["go run main.go"]

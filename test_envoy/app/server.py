@@ -6,9 +6,10 @@ import threading
 import time, math, logging
 import grpc
 import psycopg2
-import sys
+import sys, random, string
 
 _ONE_DAY_IN_SECONDS = 60 * 60 * 24
+_CHARS = string.ascii_letters
 
 _lock = threading.Lock()
 
@@ -46,6 +47,14 @@ class RegistrationServicer(registration_pb2_grpc.RegistrationServicer):
                         ")")
 
     def CreateStudent(self, request, context):
+
+        id = request.id
+        name = request.name
+        dorm = request.dorm
+        student = registration_pb2.Student(id = id, name = name, dorm = dorm)
+        return registration_pb2.StudentResponse(student=student, ok=1)
+
+        '''
         try:
             id = request.id
             name = request.name
@@ -64,6 +73,7 @@ class RegistrationServicer(registration_pb2_grpc.RegistrationServicer):
                     return registration_pb2.StudentResponse(student=student, ok=1)
         except Exception as e:
             print(str(e))
+        '''
     
     def ReadStudent(self, request, context):
         #get from database via helper method
@@ -75,50 +85,76 @@ class RegistrationServicer(registration_pb2_grpc.RegistrationServicer):
         return registration_pb2.StudentResponse(student=student, ok=1)
 
     def UpdateStudent(self, request, context):
+
+        id = request.id
+        name = ''.join(random.sample(_CHARS, 8)) + " " + ''.join(random.sample(_CHARS, 8))
+        dorm = ''.join(random.sample(_CHARS, 12)) 
+        if request.changeDorm:
+            dorm = request.new
+        else:
+            name = request.new
+        student = registration_pb2.Student(id = id, name = name, dorm = dorm)
+        return registration_pb2.StudentResponse(student=student, ok=1) 
+
+        '''
         try:
             field = "dorm" if request.changeDorm else "name"
             set_new = f"UPDATE student SET {field}={request.new} WHERE id={request.id} RETURNING *"
-            print(set_new)
 
             with _lock:
                 try:
                     self.cur.execute(set_new)
-                except psycopg.DatabaseError:
-                    self.db.rollback()
-                    student = registration_pb2.Student(id=0, name="ERROR", dorm="ERROR")
-                    return registration_pb2.StudentResponse(student=student, ok=0)
-                else:
-                    self.db.commit()
                     response = self.cur.fetchone()
+                    if response is None:
+                        student = registration_pb2.Student(id=0, name="ID does not exist!", dorm="ERROR")
+                        return registration_pb2.StudentResponse(student=student, ok=0)
+
+                    self.db.commit()
                     student = registration_pb2.Student(id=response[0], name=response[1],
                                                         dorm=response[2])
                     #respond back to client with StudentResponse
                     return registration_pb2.StudentResponse(student=student, ok=1)
         except Exception as e:
             print(str(e))
+        '''
 
     def DeleteStudent(self, request, context):
+
+        name = ''.join(random.sample(_CHARS, 8)) + " " + ''.join(random.sample(_CHARS, 8))
+        dorm = ''.join(random.sample(_CHARS, 12))
+        student = registration_pb2.Student(id=request.id, name=name, dorm=dorm) 
+        return registration_pb2.StudentResponse(student=student, ok=1)
+
+        '''
         try:
             with _lock:
                 #delete and return
-                try:
-                    self.cur.execute(f"DELETE FROM student WHERE id={request.id} "
-                                    "RETURNING *")
-                except psycopg.DatabaseError:
-                    self.db.rollback()
-                    student = registration_pb2.Student(id=0, name="ERROR", dorm="ERROR")
+                self.cur.execute(f"DELETE FROM student WHERE id={request.id} "
+                                "RETURNING *")
+                response = self.cur.fetchone()
+                if response is None:
+                    student = registration_pb2.Student(id=0, name="ID does not exist!", dorm="ERROR")
                     return registration_pb2.StudentResponse(student=student, ok=0)
-                else:
-                    self.db.commit()
-                    response = self.cur.fetchone()
-                    student = registration_pb2.Student(id=response[0], name=response[1],
-                                                        dorm = response[2])
-                    #respond back to client with StudentResponse
-                    return registration_pb2.StudentResponse(student=student, ok=1)
+
+                self.db.commit()
+                student = registration_pb2.Student(id=response[0], name=response[1],
+                                                    dorm = response[2])
+                #respond back to client with StudentResponse
+                return registration_pb2.StudentResponse(student=student, ok=1)
         except Exception as e:
             print(str(e))
+            '''
 
     def ListStudents(self, request, context):
+
+        for _ in range(random.randint(100, 1000)):
+            id = random.randint(10000000, 99999999)
+            name = ''.join(random.sample(_CHARS, 8)) + " " + ''.join(random.sample(_CHARS, 8))
+            dorm = ''.join(random.sample(_CHARS, 12))
+            student = registration_pb2.Student(id=id, name=name, dorm=dorm) 
+            yield registration_pb2.StudentResponse(student=student, ok=1)
+
+        '''
         try:
             with _lock:
                 self.cur.execute("SELECT * FROM student")
@@ -129,8 +165,15 @@ class RegistrationServicer(registration_pb2_grpc.RegistrationServicer):
                     yield response
         except Exception as e:
             print(str(e))
+            '''
 
     def GetStudent(self, request):
+
+        name = ''.join(random.sample(_CHARS, 8)) + " " + ''.join(random.sample(_CHARS, 8))
+        dorm = ''.join(random.sample(_CHARS, 12))
+        return registration_pb2.Student(id=request.id, name=name, dorm=dorm)
+
+        '''
         try:
             with _lock:
                 self.cur.execute(f"SELECT * FROM student WHERE id={request.id}")
@@ -140,6 +183,7 @@ class RegistrationServicer(registration_pb2_grpc.RegistrationServicer):
                 return registration_pb2.Student(id=entry[0], name=entry[1], dorm=entry[2])
         except Exception as e:
             print(str(e))
+        '''
 
     def ClearStudents(self, request, context):
         '''
@@ -151,10 +195,6 @@ class RegistrationServicer(registration_pb2_grpc.RegistrationServicer):
 
 
 def serve():
-    '''
-    TODO: learn this cause it's just from the grpc docs idk what this does yet
-    really tbh
-    '''
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     registration_pb2_grpc.add_RegistrationServicer_to_server(
             RegistrationServicer(), server)

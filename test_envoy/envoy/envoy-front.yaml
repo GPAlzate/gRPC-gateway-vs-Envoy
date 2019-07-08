@@ -36,7 +36,7 @@ static_resources:
               - name: envoy.router
     clusters:
       - name: app
-        connect_timeout: 0.250s
+        connect_timeout: 0.500s
         type: LOGICAL_DNS
         dns_lookup_family: V4_ONLY
         lb_policy: ROUND_ROBIN

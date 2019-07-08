@@ -37,13 +37,15 @@ services:
         volumes:
             - dbvolume:/var/lib/postgresql/data
 
-              #    docs:
-              #        container_name: protodocs
-              # image:          pseudomuto/protoc-gen-doc
-              #   volumes:
-              #    - ./proto/registration.proto:/protos/registration.proto
-              #command: --doc_opt=markdown,docs.md --proto_path=/protos/registration.proto /protos/registration.proto
-
+    nginx:
+      container_name: nginx_bridge
+      image:          nginx
+      ports:
+        - 8080:8080
+      expose:
+        - 8080
+      volumes:
+        - /Users/GabeAlzate/Desktop/gRPC-gateway-vs-envoy/test_envoy/nginx.conf:/etc/nginx/nginx.conf
 
 volumes:
     dbvolume:

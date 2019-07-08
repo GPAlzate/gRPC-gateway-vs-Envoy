@@ -1,0 +1,7 @@
+"Method","Name","# requests","# failures","Median response time","Average response time","Min response time","Max response time","Average Content Size","Requests/s"
+"GET","/students",185,0,1800,2349,99,7764,49113,1.57
+"POST",": new student",403,0,10,64,5,1814,86,3.43
+"DELETE",": remove student",135,0,12,152,5,1586,86,1.15
+"GET",": single student",158,0,26,192,5,1688,86,1.34
+"PUT",": update student",118,0,9,108,5,1301,86,1.00
+"None","Total",999,0,17,524,5,7764,9165,8.49
