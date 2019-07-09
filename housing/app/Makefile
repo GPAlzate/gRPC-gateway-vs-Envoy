@@ -1,4 +1,5 @@
 GATEWAY_FLAGS := -I.. -I$(GOPATH)/src \
+					-I$(GOPATH)/src/github.com/grpc-ecosystem/grpc-gateway/ \
 					-I$(GOPATH)/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis
 
 PYTHON_OUT := --python_out=.. --grpc_python_out=..
@@ -7,6 +8,7 @@ all:
 	make proto
 	make gostub
 	make proxy
+	make swagger
 
 proto:
 	python3 -m grpc_tools.protoc $(GATEWAY_FLAGS) $(PYTHON_OUT) ../proto/registration.proto
@@ -15,10 +17,15 @@ gostub:
 	protoc $(GATEWAY_FLAGS) --go_out=plugins=grpc:../proxy ../proto/registration.proto 
 
 proxy:
-	protoc $(GATEWAY_FLAGS) --grpc-gateway_out=logtostderr=true:../proxy/ ../proto/registration.proto
+	protoc $(GATEWAY_FLAGS) --grpc-gateway_out=logtostderr=true:../proxy ../proto/registration.proto
 	mv ../proxy/proto/* ../proxy
 	rmdir ../proxy/proto
 	cp -r ../proxy $(GOPATH)/src
+
+swagger:
+	protoc $(GATEWAY_FLAGS) --swagger_out=logtostderr=true:../swagger ../proto/registration.proto
+	mv ../swagger/proto/* ../swagger
+	rmdir ../swagger/proto
 
 edits:
 	vim -p Makefile client.py server.py ../
