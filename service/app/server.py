@@ -6,7 +6,7 @@ import threading
 import time, math, logging
 import grpc
 import psycopg2
-import sys, random, string, math
+import sys, random, string
 
 _ONE_DAY_IN_SECONDS = 60 * 60 * 24
 _CHARS = string.ascii_letters
@@ -23,7 +23,7 @@ def create_db():
                 database = config.DATABASE
                 )
 
-        print(f"Connect to {config.DATABASE} successful")
+        print(f"Connect to {config.DATABASE} successful YEETYA")
         print(sys.version)
         return conn
 
@@ -48,6 +48,7 @@ class RegistrationServicer(registration_pb2_grpc.RegistrationServicer):
 
     def CreateStudent(self, request, context):
 
+        '''
         id = request.id
         name = request.name
         dorm = request.dorm
@@ -73,7 +74,6 @@ class RegistrationServicer(registration_pb2_grpc.RegistrationServicer):
                     return registration_pb2.StudentResponse(student=student, ok=1)
         except Exception as e:
             print(str(e))
-        '''
     
     def ReadStudent(self, request, context):
         #get from database via helper method
@@ -85,7 +85,7 @@ class RegistrationServicer(registration_pb2_grpc.RegistrationServicer):
         return registration_pb2.StudentResponse(student=student, ok=1)
 
     def UpdateStudent(self, request, context):
-
+        '''
         id = request.id
         name = ''.join(random.sample(_CHARS, 8)) + " " + ''.join(random.sample(_CHARS, 8))
         dorm = ''.join(random.sample(_CHARS, 12)) 
@@ -97,6 +97,7 @@ class RegistrationServicer(registration_pb2_grpc.RegistrationServicer):
         return registration_pb2.StudentResponse(student=student, ok=1) 
 
         '''
+
         try:
             field = "dorm" if request.changeDorm else "name"
             set_new = f"UPDATE student SET {field}={request.new} WHERE id={request.id} RETURNING *"
@@ -114,12 +115,14 @@ class RegistrationServicer(registration_pb2_grpc.RegistrationServicer):
                                                         dorm=response[2])
                     #respond back to client with StudentResponse
                     return registration_pb2.StudentResponse(student=student, ok=1)
+                except Exception as e:
+                    print(str(e))
         except Exception as e:
             print(str(e))
-        '''
 
     def DeleteStudent(self, request, context):
 
+        '''
         name = ''.join(random.sample(_CHARS, 8)) + " " + ''.join(random.sample(_CHARS, 8))
         dorm = ''.join(random.sample(_CHARS, 12))
         student = registration_pb2.Student(id=request.id, name=name, dorm=dorm) 
@@ -143,10 +146,10 @@ class RegistrationServicer(registration_pb2_grpc.RegistrationServicer):
                 return registration_pb2.StudentResponse(student=student, ok=1)
         except Exception as e:
             print(str(e))
-            '''
 
     def ListStudents(self, request, context):
 
+        '''
         for _ in range(random.randint(100, 1000)):
             id = random.randint(10000000, 99999999)
             name = ''.join(random.sample(_CHARS, 8)) + " " + ''.join(random.sample(_CHARS, 8))
@@ -155,6 +158,7 @@ class RegistrationServicer(registration_pb2_grpc.RegistrationServicer):
             yield registration_pb2.StudentResponse(student=student, ok=1)
 
         '''
+
         try:
             with _lock:
                 self.cur.execute("SELECT * FROM student")
@@ -165,10 +169,9 @@ class RegistrationServicer(registration_pb2_grpc.RegistrationServicer):
                     yield response
         except Exception as e:
             print(str(e))
-            '''
 
     def GetStudent(self, request):
-
+        '''
         name = ''.join(random.sample(_CHARS, 8)) + " " + ''.join(random.sample(_CHARS, 8))
         dorm = ''.join(random.sample(_CHARS, 12))
         return registration_pb2.Student(id=request.id, name=name, dorm=dorm)
@@ -183,7 +186,6 @@ class RegistrationServicer(registration_pb2_grpc.RegistrationServicer):
                 return registration_pb2.Student(id=entry[0], name=entry[1], dorm=entry[2])
         except Exception as e:
             print(str(e))
-        '''
 
     def ClearStudents(self, request, context):
         '''

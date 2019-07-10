@@ -12,7 +12,7 @@ services:
         depends_on:
             - db
         volumes:
-            - .:/app
+            - ./app:/housing/app
 
     envoy:
         container_name: envoy_bridge
@@ -24,7 +24,7 @@ services:
             - 4748:4748
         volumes:
             - ./envoy/envoy-front.yaml:/etc/envoy-front.yaml
-            - .:/app
+            - ./proto:/proto
 
     db:
         container_name: postgres_bridge
@@ -45,7 +45,7 @@ services:
       expose:
         - 8080
       volumes:
-        - /Users/GabeAlzate/Desktop/gRPC-gateway-vs-envoy/test_envoy/nginx.conf:/etc/nginx/nginx.conf
+        - ./nginx.conf:/etc/nginx/nginx.conf
 
 volumes:
     dbvolume:

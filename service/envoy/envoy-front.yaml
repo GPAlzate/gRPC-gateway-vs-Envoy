@@ -32,12 +32,12 @@ static_resources:
               - name: envoy.grpc_http1_bridge
               - name: envoy.grpc_json_transcoder
                 config:
-                    proto_descriptor: "/app/proto/registration.pb"
+                    proto_descriptor: "/proto/registration.pb"
                     services: ["housing.Registration"]
               - name: envoy.router
     clusters:
       - name: app
-        connect_timeout: 0.500s
+        connect_timeout: 0.250s
         type: LOGICAL_DNS
         dns_lookup_family: V4_ONLY
         lb_policy: ROUND_ROBIN
