@@ -8,19 +8,18 @@ _lock = threading.Lock()
 _CHARS = string.ascii_letters
 class MyTaskSet(TaskSequence):
 
-    @seq_task(2)
+    #@task(1)
     def list(self):
         #with _lock:
         self.client.get("/students")
 
-    @seq_task(3)
+    @task()
     def get(self):
         #with _lock:
         id = random.randint(10000000, 99999999)
         self.client.get(f"/students/{id}", name=": single student")
 
-    @seq_task(1)
-    @task(2)
+    @task()
     def register(self):
         id = random.randint(10000000, 99999999)
         name = ''.join(random.sample(_CHARS, 8)) + " " + ''.join(random.sample(_CHARS, 8))
@@ -33,13 +32,13 @@ class MyTaskSet(TaskSequence):
                 "dorm": dorm
         }, name=": new student")
 
-    @seq_task(4)
+    @task
     def delete(self):
         #with _lock:
         id = random.randint(10000000, 99999999)
         self.client.delete(f"/students/delete/{id}", name=": remove student")
 
-    @seq_task(5)
+    @task
     def update(self):
         changeDorm = bool(random.getrandbits(1))
         new = ''.join(random.sample(_CHARS, 12)) 

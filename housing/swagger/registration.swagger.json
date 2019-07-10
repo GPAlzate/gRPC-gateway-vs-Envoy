@@ -151,8 +151,10 @@
         "operationId": "CreateStudent",
         "responses": {
           "200": {
-            "description": "YEET",
-            "schema": {}
+            "description": "Overwrites YEET",
+            "schema": {
+              "format": "string"
+            }
           },
           "404": {
             "description": "Returned when the resource does not exist.",

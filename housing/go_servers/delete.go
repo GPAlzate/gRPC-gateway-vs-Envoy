@@ -1,4 +1,4 @@
-package main
+package main;
 
 import (
     "context"  // Use "golang.org/x/net/context" for Golang version <= 1.6
@@ -15,10 +15,10 @@ import (
 var (
     // command-line options:
     // gRPC server endpoint
-    grpcServerEndpoint = flag.String("endpoint",  "0.0.0.0:50051", "gRPC server endpoint")
+    deleteEndpoint = flag.String("endpoint",  "0.0.0.0:50051", "gRPC server endpoint")
 )
 
-func run() error {
+func runDelete() error {
     ctx := context.Background()
     ctx, cancel := context.WithCancel(ctx)
     defer cancel()
@@ -27,20 +27,20 @@ func run() error {
     // Note: Make sure the gRPC server is running properly and accessible
     mux := runtime.NewServeMux()
     opts := []grpc.DialOption{grpc.WithInsecure()}
-    err := gw.RegisterRegistrationHandlerFromEndpoint(ctx, mux,  *grpcServerEndpoint, opts)
+    err := gw.RegisterRegistrationHandlerFromEndpoint(ctx, mux,  *deleteEndpoint, opts)
     if err != nil {
         return err
     }
 
     // Start HTTP server (and proxy calls to gRPC server endpoint)
-    return http.ListenAndServe(":4747", mux)
+    return http.ListenAndServe(":4753", mux)
 }
 
 func main() {
     flag.Parse()
     defer glog.Flush()
 
-    if err := run(); err != nil {
+    if err := runDelete(); err != nil {
         glog.Fatal(err)
     }
 }
