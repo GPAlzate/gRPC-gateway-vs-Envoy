@@ -67,9 +67,9 @@ option (grpc.gateway.protoc_gen_swagger.options.openapiv2_swagger) = {
  *
  *      ListCompany     -   lists all the students in the database
  *
- *      ClearCompanys   -   clears student registrations (not for client use)
+ *      ClearCompanies   -   clears student registrations (not for client use)
  */
-service Registration {
+service Recruiter {
 
     /// Creates a company from a company message. Returns created company with
     // ok response
@@ -125,7 +125,7 @@ service Registration {
     // Returns new student.
     rpc UpdateCompany(CompanyRequest) returns (CompanyResponse){
         option (google.api.http) = {
-            put: "update/{companyCode}"
+            put: "/update/{companyCode}"
             body: "*"
         };
     };
@@ -161,7 +161,7 @@ service Registration {
     };
 
     /// Removes all registered companies
-    rpc ClearCompanys(Void) returns (Void){
+    rpc ClearCompanies(Void) returns (Void){
         option (google.api.http) = {
             delete: "/clear"
         };

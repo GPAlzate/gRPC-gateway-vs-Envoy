@@ -1,6 +1,6 @@
 from concurrent import futures
 from app import config
-from proto import registration_pb2, registration_pb2_grpc
+from proto import recruiter_pb2, recruiter_pb2_grpc
 import threading
 
 import time, math, logging
@@ -23,7 +23,7 @@ def create_db():
                 database = config.DATABASE
                 )
 
-        print(f"Connect to {config.DATABASE} successful YEETYA")
+        print(f"Connect to {config.DATABASE} successful")
         print(sys.version)
         return conn
 
@@ -31,7 +31,7 @@ def create_db():
         print("Database connection failure: Quitting...")
         return None
 
-class RegistrationServicer(registration_pb2_grpc.RegistrationServicer): 
+class RegistrationServicer(recruiter_pb2_grpc.RegistrationServicer): 
 
     def __init__(self):
         self.db = create_db()
@@ -40,54 +40,49 @@ class RegistrationServicer(registration_pb2_grpc.RegistrationServicer):
             return
 
         self.cur = self.db.cursor()
-        self.cur.execute("CREATE TABLE IF NOT EXISTS Student("
-                        "id INT PRIMARY KEY,"
-                        "name VARCHAR (255) NOT NULL,"
-                        "dorm VARCHAR (15)NOT NULL"
+        self.cur.execute("CREATE TABLE IF NOT EXISTS companies("
+                        "companyCode INT PRIMARY KEY,"
+                        "companyName VARCHAR (255) NOT NULL,"
+                        "numOpenings INT (15) NOT NULL CHECK(numOpenings > 0),"
+                        "isBrokerage BOOLEAN NOT NULL"
                         ")")
 
-    def CreateStudent(self, request, context):
-
-        '''
-        id = request.id
-        name = request.name
-        dorm = request.dorm
-        student = registration_pb2.Student(id = id, name = name, dorm = dorm)
-        return registration_pb2.StudentResponse(student=student, ok=1)
-
-        '''
+    def CreateCompany(self, request, context):
         try:
-            id = request.id
-            name = request.name
-            dorm = request.dorm
-            student = registration_pb2.Student(id = id, name = name, dorm = dorm)
+            code = request.companyCode
+            name = request.companyName
+            ops = request.numOpenings
+            broks = request.isBrokerage
+            company = recruiter_pb2.Company(companyCode = code, companyName = name,
+                                            numOpenings = ops, isBrokerage = broks)
 
             with _lock:
                 try:
-                    self.cur.execute("INSERT INTO student (id, name, dorm) "
-                            f"VALUES ({id}, {name}, {dorm})")
+                    self.cur.execute("INSERT INTO companies (companyCode, companyName, "
+                                        "numOpenings, isBrokerage) "
+                                        f"VALUES ({code}, {name}, {ops}, {broks})")
                 except psycopg2.IntegrityError:
                     self.db.rollback()
-                    return registration_pb2.StudentResponse(student=student, ok=0)
+                    return recruiter_pb2.CompanyResponse(company=company, ok=0)
                 else:
                     self.db.commit()
-                    return registration_pb2.StudentResponse(student=student, ok=1)
+                    return recruiter_pb2.CompanyResponse(company=company, ok=0)
         except Exception as e:
             print(str(e))
     
-    def ReadStudent(self, request, context):
+    def ReadCompany(self, request, context):
         #get from database via helper method
-        student = self.GetStudent(request)
+        student = self.GetCompany(request)
 
         #400 if the requested student doesn't exist
         if not student.id:
             context.set_details(f"Student with ID {request.id} does not exist!")
             context.set_code(grpc.StatusCode.INVALID_ARGUMENT)
-            return registration_pb2.StudentResponse(student=student, ok=0)
+            return recruiter_pb2.StudentResponse(student=student, ok=0)
 
-        return registration_pb2.StudentResponse(student=student, ok=1)
+        return recruiter_pb2.StudentResponse(student=student, ok=1)
 
-    def UpdateStudent(self, request, context):
+    def UpdateCompany(self, request, context):
         '''
         id = request.id
         name = ''.join(random.sample(_CHARS, 8)) + " " + ''.join(random.sample(_CHARS, 8))
@@ -96,8 +91,8 @@ class RegistrationServicer(registration_pb2_grpc.RegistrationServicer):
             dorm = request.new
         else:
             name = request.new
-        student = registration_pb2.Student(id = id, name = name, dorm = dorm)
-        return registration_pb2.StudentResponse(student=student, ok=1) 
+        student = recruiter_pb2.Student(id = id, name = name, dorm = dorm)
+        return recruiter_pb2.StudentResponse(student=student, ok=1) 
 
         '''
 
@@ -112,28 +107,20 @@ class RegistrationServicer(registration_pb2_grpc.RegistrationServicer):
                     if response is None:
                         context.set_details(f"Student with ID {request.id} does not exist!")
                         context.set_code(grpc.StatusCode.INVALID_ARGUMENT)
-                        student = registration_pb2.Student(id=0)
-                        return registration_pb2.StudentResponse(student=student, ok=0)
+                        student = recruiter_pb2.Student(id=0)
+                        return recruiter_pb2.StudentResponse(student=student, ok=0)
 
                     self.db.commit()
-                    student = registration_pb2.Student(id=response[0], name=response[1],
+                    student = recruiter_pb2.Student(id=response[0], name=response[1],
                                                         dorm=response[2])
                     #respond back to client with StudentResponse
-                    return registration_pb2.StudentResponse(student=student, ok=1)
+                    return recruiter_pb2.StudentResponse(student=student, ok=1)
                 except Exception as e:
                     print(str(e))
         except Exception as e:
             print(str(e))
 
-    def DeleteStudent(self, request, context):
-
-        '''
-        name = ''.join(random.sample(_CHARS, 8)) + " " + ''.join(random.sample(_CHARS, 8))
-        dorm = ''.join(random.sample(_CHARS, 12))
-        student = registration_pb2.Student(id=request.id, name=name, dorm=dorm) 
-        return registration_pb2.StudentResponse(student=student, ok=1)
-
-        '''
+    def DeleteCompany(self, request, context):
         try:
 
             with _lock:
@@ -146,26 +133,26 @@ class RegistrationServicer(registration_pb2_grpc.RegistrationServicer):
                 if response is None:
                     context.set_details(f"Student with ID {request.id} does not exist!!")
                     context.set_code(grpc.StatusCode.UNKNOWN)
-                    badstudent = registration_pb2.Student()
-                    return registration_pb2.StudentResponse(student=badstudent, ok=0)
+                    badstudent = recruiter_pb2.Student()
+                    return recruiter_pb2.StudentResponse(student=badstudent, ok=0)
 
                 self.db.commit()
-                student = registration_pb2.Student(id=response[0], name=response[1],
+                student = recruiter_pb2.Student(id=response[0], name=response[1],
                                                     dorm = response[2])
                 #respond back to client with StudentResponse
-                return registration_pb2.StudentResponse(student=student, ok=1)
+                return recruiter_pb2.StudentResponse(student=student, ok=1)
         except Exception as e:
             print(str(e))
 
-    def ListStudents(self, request, context):
+    def ListCompanies(self, request, context):
 
         '''
         for _ in range(random.randint(100, 1000)):
             id = random.randint(10000000, 99999999)
             name = ''.join(random.sample(_CHARS, 8)) + " " + ''.join(random.sample(_CHARS, 8))
             dorm = ''.join(random.sample(_CHARS, 12))
-            student = registration_pb2.Student(id=id, name=name, dorm=dorm) 
-            yield registration_pb2.StudentResponse(student=student, ok=1)
+            student = recruiter_pb2.Student(id=id, name=name, dorm=dorm) 
+            yield recruiter_pb2.StudentResponse(student=student, ok=1)
 
         '''
 
@@ -174,17 +161,17 @@ class RegistrationServicer(registration_pb2_grpc.RegistrationServicer):
                 self.cur.execute("SELECT * FROM student")
                 rows = self.cur.fetchall()
                 for row in rows:
-                    student = registration_pb2.Student(id=row[0], name=row[1], dorm=row[2])
-                    response = registration_pb2.StudentResponse(student=student, ok=1)
+                    student = recruiter_pb2.Student(id=row[0], name=row[1], dorm=row[2])
+                    response = recruiter_pb2.StudentResponse(student=student, ok=1)
                     yield response
         except Exception as e:
             print(str(e))
 
-    def GetStudent(self, request):
+    def GetCompany(self, request):
         '''
         name = ''.join(random.sample(_CHARS, 8)) + " " + ''.join(random.sample(_CHARS, 8))
         dorm = ''.join(random.sample(_CHARS, 12))
-        return registration_pb2.Student(id=request.id, name=name, dorm=dorm)
+        return recruiter_pb2.Student(id=request.id, name=name, dorm=dorm)
 
         '''
         try:
@@ -192,23 +179,23 @@ class RegistrationServicer(registration_pb2_grpc.RegistrationServicer):
                 self.cur.execute(f"SELECT * FROM student WHERE id={request.id}")
                 entry = self.cur.fetchone()
                 if entry is None:
-                    return registration_pb2.Student(id=0)
-                return registration_pb2.Student(id=entry[0], name=entry[1], dorm=entry[2])
+                    return recruiter_pb2.Student(id=0)
+                return recruiter_pb2.Student(id=entry[0], name=entry[1], dorm=entry[2])
         except Exception as e:
             print(str(e))
 
-    def ClearStudents(self, request, context):
+    def ClearCompanies(self, request, context):
         '''
         No client app for this
         '''
         self.cur.execute("TRUNCATE student")
         self.db.commit()
-        return registration_pb2.Void()
+        return recruiter_pb2.Void()
 
 
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
-    registration_pb2_grpc.add_RegistrationServicer_to_server(
+    recruiter_pb2_grpc.add_RegistrationServicer_to_server(
             RegistrationServicer(), server)
     server.add_insecure_port('[::]:50051')
     server.start()
