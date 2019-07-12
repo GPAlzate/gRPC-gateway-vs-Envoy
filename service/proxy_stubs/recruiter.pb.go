@@ -212,9 +212,7 @@ func (m *CompanyRequest) GetOk() bool {
 // A response sent by a server, returning a `Company` message and a boolean field
 // indicating a successful transaction
 type CompanyResponse struct {
-	//*
-	// The deleted, created, or retrieved student. If response is not `ok`,
-	// id = 0, name = dorm = "ERROR"
+	// The deleted, created, or retrieved company
 	Company *Company `protobuf:"bytes,1,opt,name=company,proto3" json:"company,omitempty"`
 	// True if transaction is successful, false otherwise
 	Ok                   bool     `protobuf:"varint,2,opt,name=ok,proto3" json:"ok,omitempty"`

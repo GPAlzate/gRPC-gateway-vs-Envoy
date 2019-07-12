@@ -6,7 +6,7 @@ from proto import recruiter_pb2 as proto_dot_recruiter__pb2
 
 class RecruiterStub(object):
   """*
-  Defines the services a client can use to register for housing.
+  Defines the services a client can use to use Kalibrr's job platform
 
   RPC Methods:
 
@@ -63,7 +63,7 @@ class RecruiterStub(object):
 
 class RecruiterServicer(object):
   """*
-  Defines the services a client can use to register for housing.
+  Defines the services a client can use to use Kalibrr's job platform
 
   RPC Methods:
 

@@ -51,7 +51,7 @@ option (grpc.gateway.protoc_gen_swagger.options.openapiv2_swagger) = {
 };
 
 /**
- * Defines the services a client can use to register for housing.
+ * Defines the services a client can use to use Kalibrr's job platform
  *
  * RPC Methods:
  *
@@ -218,10 +218,7 @@ message CompanyRequest {
  */
 message CompanyResponse{
 
-    /**
-     * The deleted, created, or retrieved student. If response is not `ok`,
-     * id = 0, name = dorm = "ERROR"
-     */
+    /* The deleted, created, or retrieved company */
     Company company = 1;
 
     /* True if transaction is successful, false otherwise */

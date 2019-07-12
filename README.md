@@ -73,7 +73,7 @@ indicating a successful transaction
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| company | [Company](#recruiter.Company) |  | The deleted, created, or retrieved student. If response is not `ok`, id = 0, name = dorm = &#34;ERROR&#34; |
+| company | [Company](#recruiter.Company) |  | The deleted, created, or retrieved company |
 | ok | [bool](#bool) |  | True if transaction is successful, false otherwise |
 
 
@@ -100,7 +100,7 @@ Empty message for rpc&#39;s that require no request (clear and list)
 <a name="recruiter.Recruiter"></a>
 
 ### Recruiter
-Defines the services a client can use to register for housing.
+Defines the services a client can use to use Kalibrr&#39;s job platform
 
 RPC Methods:
 

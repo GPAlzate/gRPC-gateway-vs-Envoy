@@ -414,7 +414,7 @@
       "properties": {
         "company": {
           "$ref": "#/definitions/recruiterCompany",
-          "title": "*\nThe deleted, created, or retrieved student. If response is not `ok`,\nid = 0, name = dorm = \"ERROR\""
+          "title": "The deleted, created, or retrieved company"
         },
         "ok": {
           "type": "boolean",
