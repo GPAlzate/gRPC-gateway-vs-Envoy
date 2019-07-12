@@ -217,7 +217,7 @@
 
       
         <h3 id="recruiter.Company">Company</h3>
-        <p>Represents a company with a name, code, numer of job openings,</p><p>and is_brokerage field</p>
+        <p>Represents a company with a name, code, numer of job openings,</p><p>and isBrokerage field</p>
 
         
           <table class="field-table">
@@ -275,28 +275,35 @@
                   <td>companyCode</td>
                   <td><a href="#int32">int32</a></td>
                   <td></td>
-                  <td><p>Unique id student query </p></td>
+                  <td><p>unique id for each company </p></td>
                 </tr>
               
                 <tr>
-                  <td>changeName</td>
-                  <td><a href="#bool">bool</a></td>
+                  <td>companyName</td>
+                  <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p>True if the client requests to change the dorm, false to change name </p></td>
+                  <td><p>name of the company </p></td>
                 </tr>
               
                 <tr>
                   <td>numOpenings</td>
                   <td><a href="#int32">int32</a></td>
                   <td></td>
-                  <td><p>The new number of openings </p></td>
+                  <td><p>how many jobs are available </p></td>
                 </tr>
               
                 <tr>
-                  <td>newName</td>
-                  <td><a href="#string">string</a></td>
+                  <td>isBrokerage</td>
+                  <td><a href="#bool">bool</a></td>
                   <td></td>
-                  <td><p>The updated name </p></td>
+                  <td><p>determines if the company is brokerage </p></td>
+                </tr>
+              
+                <tr>
+                  <td>ok</td>
+                  <td><a href="#bool">bool</a></td>
+                  <td></td>
+                  <td><p>True if transaction is successful, false otherwise </p></td>
                 </tr>
               
             </tbody>
@@ -361,7 +368,7 @@ id = 0, name = dorm = &#34;ERROR&#34; </p></td>
             
               <tr>
                 <td>CreateCompany</td>
-                <td><a href="#recruiter.Company">Company</a></td>
+                <td><a href="#recruiter.CompanyRequest">CompanyRequest</a></td>
                 <td><a href="#recruiter.CompanyResponse">CompanyResponse</a></td>
                 <td><p>Creates a company from a company message. Returns created company with
 ok response</p></td>

@@ -29,7 +29,7 @@
 
 ### Company
 Represents a company with a name, code, numer of job openings,
- and is_brokerage field
+ and isBrokerage field
 
 
 | Field | Type | Label | Description |
@@ -53,10 +53,11 @@ A request made by a client, specifiying id of a student. `changeDorm` and
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| companyCode | [int32](#int32) |  | Unique id student query |
-| changeName | [bool](#bool) |  | True if the client requests to change the dorm, false to change name |
-| numOpenings | [int32](#int32) |  | The new number of openings |
-| newName | [string](#string) |  | The updated name |
+| companyCode | [int32](#int32) |  | unique id for each company |
+| companyName | [string](#string) |  | name of the company |
+| numOpenings | [int32](#int32) |  | how many jobs are available |
+| isBrokerage | [bool](#bool) |  | determines if the company is brokerage |
+| ok | [bool](#bool) |  | True if transaction is successful, false otherwise |
 
 
 
@@ -119,7 +120,7 @@ RPC Methods:
 
 | Method Name | Request Type | Response Type | Description |
 | ----------- | ------------ | ------------- | ------------|
-| CreateCompany | [Company](#recruiter.Company) | [CompanyResponse](#recruiter.CompanyResponse) | Creates a company from a company message. Returns created company with ok response |
+| CreateCompany | [CompanyRequest](#recruiter.CompanyRequest) | [CompanyResponse](#recruiter.CompanyResponse) | Creates a company from a company message. Returns created company with ok response |
 | ReadCompany | [CompanyRequest](#recruiter.CompanyRequest) | [CompanyResponse](#recruiter.CompanyResponse) | Reads a company, queried by company code. Returns company with ok response |
 | UpdateCompany | [CompanyRequest](#recruiter.CompanyRequest) | [CompanyResponse](#recruiter.CompanyResponse) | Updates a student&#39;s name or dorm. Specified by `changeDorm` boolean. Returns new student. |
 | DeleteCompany | [CompanyRequest](#recruiter.CompanyRequest) | [CompanyResponse](#recruiter.CompanyResponse) | Deletes a registration queried by id and returns the deleted student |

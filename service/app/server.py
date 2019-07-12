@@ -48,149 +48,143 @@ class RegistrationServicer(recruiter_pb2_grpc.RegistrationServicer):
                         ")")
 
     def CreateCompany(self, request, context):
+        """
+            Registers a company in the Kalibrr database. Will return a not OK
+            response for any errors.
+        """
         try:
+            #make new company request
             code = request.companyCode
             name = request.companyName
             ops = request.numOpenings
-            broks = request.isBrokerage
-            company = recruiter_pb2.Company(companyCode = code, companyName = name,
-                                            numOpenings = ops, isBrokerage = broks)
+            brok = request.isBrokerage
 
+            company = recruiter_pb2.Company(companyCode = code, companyName = name,
+                                            numOpenings = ops, isBrokerage = brok)
+            request = recruiter_pb2.CompanyRequest(company = company, ok = 1)
+
+            #insert new company in a thread safe manner
             with _lock:
                 try:
                     self.cur.execute("INSERT INTO companies (companyCode, companyName, "
                                         "numOpenings, isBrokerage) "
-                                        f"VALUES ({code}, {name}, {ops}, {broks})")
+                                        f"VALUES ({code}, {name}, {ops}, {brok})")
                 except psycopg2.IntegrityError:
                     self.db.rollback()
-                    return recruiter_pb2.CompanyResponse(company=company, ok=0)
+                    return recruiter_pb2.CompanyResponse(company=company)
                 else:
                     self.db.commit()
-                    return recruiter_pb2.CompanyResponse(company=company, ok=0)
+                    return recruiter_pb2.CompanyResponse(company=company, ok=1)
         except Exception as e:
             print(str(e))
     
     def ReadCompany(self, request, context):
+        """
+            Gets a company from the Kalibrr database, queried by a unique
+            company code.
+        """
         #get from database via helper method
-        student = self.GetCompany(request)
+        company = self.GetCompany(request)
 
         #400 if the requested student doesn't exist
-        if not student.id:
-            context.set_details(f"Student with ID {request.id} does not exist!")
+        if not company.companyCode:
+            context.set_details(f"Company with code {request.companyCode} does not exist!")
             context.set_code(grpc.StatusCode.INVALID_ARGUMENT)
-            return recruiter_pb2.StudentResponse(student=student, ok=0)
+            return recruiter_pb2.CompanyResponse(company=company, ok=0)
 
-        return recruiter_pb2.StudentResponse(student=student, ok=1)
+        return recruiter_pb2.CompanyResponse(company=company, ok=1)
 
     def UpdateCompany(self, request, context):
-        '''
-        id = request.id
-        name = ''.join(random.sample(_CHARS, 8)) + " " + ''.join(random.sample(_CHARS, 8))
-        dorm = ''.join(random.sample(_CHARS, 12)) 
-        if request.changeDorm:
-            dorm = request.new
-        else:
-            name = request.new
-        student = recruiter_pb2.Student(id = id, name = name, dorm = dorm)
-        return recruiter_pb2.StudentResponse(student=student, ok=1) 
-
-        '''
-
+        """
+            Allows changes to be made to a registered company. Can change the
+            company name or the number of job openings.
+        """
         try:
-            field = "dorm" if request.changeDorm else "name"
-            set_new = f"UPDATE student SET {field}={request.new} WHERE id={request.id} RETURNING *"
+            code = request.companyCode
+            name = request.companyName
+            ops = request.numOpenings
+            brok = request.isBrokerage
+
+            setNewFields = "SET "
+            if name:
+                setNewFields += f"companyName={name},"
+            if ops:
+                setNewFields += f"numOpenings={ops},"
+            if brok:
+                setNewFields += f"isBrokerage={brok}"
+
+            set_new = f"UPDATE company {setNewFields.rstrip(',')} WHERE companyCode={code} RETURNING *"
 
             with _lock:
-                try:
-                    self.cur.execute(set_new)
-                    response = self.cur.fetchone()
-                    if response is None:
-                        context.set_details(f"Student with ID {request.id} does not exist!")
-                        context.set_code(grpc.StatusCode.INVALID_ARGUMENT)
-                        student = recruiter_pb2.Student(id=0)
-                        return recruiter_pb2.StudentResponse(student=student, ok=0)
-
-                    self.db.commit()
-                    student = recruiter_pb2.Student(id=response[0], name=response[1],
-                                                        dorm=response[2])
-                    #respond back to client with StudentResponse
-                    return recruiter_pb2.StudentResponse(student=student, ok=1)
-                except Exception as e:
-                    print(str(e))
+                self.cur.execute(set_new)
+                response = self.cur.fetchone()
+                return SubmitResponse(code, response, context)
         except Exception as e:
             print(str(e))
 
     def DeleteCompany(self, request, context):
         try:
-
+            code = request.company.companyCode
             with _lock:
                 #delete and return
-                self.cur.execute(f"DELETE FROM student WHERE id={request.id} "
-                                "RETURNING *")
+                self.cur.execute(f"DELETE FROM company "
+                                f"WHERE companyCode={code} RETURNING *")
                 response = self.cur.fetchone()
-
-                #400 response
-                if response is None:
-                    context.set_details(f"Student with ID {request.id} does not exist!!")
-                    context.set_code(grpc.StatusCode.UNKNOWN)
-                    badstudent = recruiter_pb2.Student()
-                    return recruiter_pb2.StudentResponse(student=badstudent, ok=0)
-
-                self.db.commit()
-                student = recruiter_pb2.Student(id=response[0], name=response[1],
-                                                    dorm = response[2])
-                #respond back to client with StudentResponse
-                return recruiter_pb2.StudentResponse(student=student, ok=1)
+                return SubmitResponse(code, response, context)
         except Exception as e:
             print(str(e))
 
     def ListCompanies(self, request, context):
-
-        '''
-        for _ in range(random.randint(100, 1000)):
-            id = random.randint(10000000, 99999999)
-            name = ''.join(random.sample(_CHARS, 8)) + " " + ''.join(random.sample(_CHARS, 8))
-            dorm = ''.join(random.sample(_CHARS, 12))
-            student = recruiter_pb2.Student(id=id, name=name, dorm=dorm) 
-            yield recruiter_pb2.StudentResponse(student=student, ok=1)
-
-        '''
-
         try:
             with _lock:
-                self.cur.execute("SELECT * FROM student")
+                self.cur.execute("SELECT * FROM companies")
                 rows = self.cur.fetchall()
                 for row in rows:
-                    student = recruiter_pb2.Student(id=row[0], name=row[1], dorm=row[2])
-                    response = recruiter_pb2.StudentResponse(student=student, ok=1)
-                    yield response
+                    company = recruiter_pb2.Company(companyCode=row[0], companyName=row[1],
+                                                numOpenings=row[2], isBrokerage=row[3])
+                    yield recruiter_pb2.CompanyResponse(company=company, ok=1)
         except Exception as e:
             print(str(e))
 
     def GetCompany(self, request):
-        '''
-        name = ''.join(random.sample(_CHARS, 8)) + " " + ''.join(random.sample(_CHARS, 8))
-        dorm = ''.join(random.sample(_CHARS, 12))
-        return recruiter_pb2.Student(id=request.id, name=name, dorm=dorm)
-
-        '''
+        """
+            Helper method gets one company from the database, queried by unique code
+        """
         try:
             with _lock:
-                self.cur.execute(f"SELECT * FROM student WHERE id={request.id}")
+                self.cur.execute(f"SELECT * FROM companies WHERE " 
+                                    "companyCode={request.companyCode}")
                 entry = self.cur.fetchone()
+
+                #returns with company code 0 by default
                 if entry is None:
-                    return recruiter_pb2.Student(id=0)
-                return recruiter_pb2.Student(id=entry[0], name=entry[1], dorm=entry[2])
+                    return recruiter_pb2.Company()
+                return recruiter_pb2.Company(companyCode=entry[0], companyName=entry[1],
+                                            numOpenings=entry[2], isBrokerage=entry[3])
         except Exception as e:
             print(str(e))
 
     def ClearCompanies(self, request, context):
-        '''
-        No client app for this
-        '''
-        self.cur.execute("TRUNCATE student")
+        """
+            No client app for this; clears the entire database of companies. For
+            testing purposes only
+        """
+        self.cur.execute("TRUNCATE company")
         self.db.commit()
         return recruiter_pb2.Void()
+
+    def SubmitResponse(self, code, response, context):
+        #400 response
+        if response is None:
+            context.set_details(f"Company with code {code} does not exist!")
+            context.set_code(grpc.StatusCode.INVALID_ARGUMENT)
+            company = recruiter_pb2.Company()
+            return recruiter_pb2.CompanyResponse(company=company, ok=0)
+
+        self.db.commit()
+        company = recruiter_pb2.Company(companyCode=response[0], companyName=response[1],
+                                    numOpenings=response[2], isBrokerage=response[3])
+        return recruiter_pb2.CompanyResponse(company=company, ok=1)
 
 
 def serve():

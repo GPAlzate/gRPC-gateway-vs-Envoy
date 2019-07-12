@@ -121,7 +121,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/recruiterCompany"
+              "$ref": "#/definitions/recruiterCompanyRequest"
             }
           }
         ],
@@ -164,34 +164,42 @@
         "parameters": [
           {
             "name": "companyCode",
-            "description": "Unique id student query",
+            "description": "unique id for each company",
             "in": "path",
             "required": true,
             "type": "integer",
             "format": "int32"
           },
           {
-            "name": "changeName",
-            "description": "True if the client requests to change the dorm, false to change name.",
+            "name": "companyName",
+            "description": "name of the company.",
             "in": "query",
             "required": false,
-            "type": "boolean",
-            "format": "boolean"
+            "type": "string"
           },
           {
             "name": "numOpenings",
-            "description": "The new number of openings.",
+            "description": "how many jobs are available.",
             "in": "query",
             "required": false,
             "type": "integer",
             "format": "int32"
           },
           {
-            "name": "newName",
-            "description": "The updated name.",
+            "name": "isBrokerage",
+            "description": "determines if the company is brokerage.",
             "in": "query",
             "required": false,
-            "type": "string"
+            "type": "boolean",
+            "format": "boolean"
+          },
+          {
+            "name": "ok",
+            "description": "True if transaction is successful, false otherwise.",
+            "in": "query",
+            "required": false,
+            "type": "boolean",
+            "format": "boolean"
           }
         ],
         "tags": [
@@ -232,7 +240,7 @@
         "parameters": [
           {
             "name": "companyCode",
-            "description": "Unique id student query",
+            "description": "unique id for each company",
             "in": "path",
             "required": true,
             "type": "integer",
@@ -286,34 +294,42 @@
         "parameters": [
           {
             "name": "companyCode",
-            "description": "Unique id student query",
+            "description": "unique id for each company",
             "in": "path",
             "required": true,
             "type": "integer",
             "format": "int32"
           },
           {
-            "name": "changeName",
-            "description": "True if the client requests to change the dorm, false to change name.",
+            "name": "companyName",
+            "description": "name of the company.",
             "in": "query",
             "required": false,
-            "type": "boolean",
-            "format": "boolean"
+            "type": "string"
           },
           {
             "name": "numOpenings",
-            "description": "The new number of openings.",
+            "description": "how many jobs are available.",
             "in": "query",
             "required": false,
             "type": "integer",
             "format": "int32"
           },
           {
-            "name": "newName",
-            "description": "The updated name.",
+            "name": "isBrokerage",
+            "description": "determines if the company is brokerage.",
             "in": "query",
             "required": false,
-            "type": "string"
+            "type": "boolean",
+            "format": "boolean"
+          },
+          {
+            "name": "ok",
+            "description": "True if transaction is successful, false otherwise.",
+            "in": "query",
+            "required": false,
+            "type": "boolean",
+            "format": "boolean"
           }
         ],
         "tags": [
@@ -361,7 +377,7 @@
           "title": "determines if the company is brokerage"
         }
       },
-      "title": "*\nRepresents a company with a name, code, numer of job openings,\n and is_brokerage field"
+      "title": "*\nRepresents a company with a name, code, numer of job openings,\n and isBrokerage field"
     },
     "recruiterCompanyRequest": {
       "type": "object",
@@ -369,21 +385,26 @@
         "companyCode": {
           "type": "integer",
           "format": "int32",
-          "title": "Unique id student query"
+          "title": "unique id for each company"
         },
-        "changeName": {
-          "type": "boolean",
-          "format": "boolean",
-          "title": "True if the client requests to change the dorm, false to change name"
+        "companyName": {
+          "type": "string",
+          "title": "name of the company"
         },
         "numOpenings": {
           "type": "integer",
           "format": "int32",
-          "title": "The new number of openings"
+          "title": "how many jobs are available"
         },
-        "newName": {
-          "type": "string",
-          "title": "The updated name"
+        "isBrokerage": {
+          "type": "boolean",
+          "format": "boolean",
+          "title": "determines if the company is brokerage"
+        },
+        "ok": {
+          "type": "boolean",
+          "format": "boolean",
+          "title": "True if transaction is successful, false otherwise"
         }
       },
       "description": "*\nA request made by a client, specifiying id of a student. `changeDorm` and \n`new` are set when updating a student."
