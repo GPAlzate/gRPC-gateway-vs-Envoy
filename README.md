@@ -28,8 +28,8 @@
 <a name="recruiter.Company"></a>
 
 ### Company
-Represents a company with a name, code, numer of job openings,
- and isBrokerage field
+Represents a company with a name, code, number of job openings,
+and brokerage status
 
 
 | Field | Type | Label | Description |
@@ -47,8 +47,8 @@ Represents a company with a name, code, numer of job openings,
 <a name="recruiter.CompanyRequest"></a>
 
 ### CompanyRequest
-A request made by a client, specifiying id of a student. `changeDorm` and 
-`new` are set when updating a student.
+A request made by a client who specifies a unique company code. Fields 2-4
+are set when updating a company&#39;s details.
 
 
 | Field | Type | Label | Description |
@@ -67,7 +67,7 @@ A request made by a client, specifiying id of a student. `changeDorm` and
 <a name="recruiter.CompanyResponse"></a>
 
 ### CompanyResponse
-A response sent by a server, returning a student message and a boolean field
+A response sent by a server, returning a `Company` message and a boolean field
 indicating a successful transaction
 
 
@@ -104,26 +104,24 @@ Defines the services a client can use to register for housing.
 
 RPC Methods:
 
-     CreateCompany   -   adds a new student registration
+     CreateCompany   -   adds a new company
 
-     ReadCompany     -   returns a single student from database given an
-                         id number
+     ReadCompany     -   returns a single company queried by company code
 
-     UpdateCompany   -   updates either the name or dorm of a student given
-                         an id number request
+     UpdateCompany   -   updates the information of a company (except for code)
 
-     DeleteCompany   -   deletes a student given an id number request
+     DeleteCompany   -   deletes a company
 
-     ListCompany     -   lists all the students in the database
+     ListCompany     -   lists all the companies in the database
 
-     ClearCompanies   -   clears student registrations (not for client use)
+     ClearCompanies  -   clears company registrations (not for client use)
 
 | Method Name | Request Type | Response Type | Description |
 | ----------- | ------------ | ------------- | ------------|
 | CreateCompany | [Company](#recruiter.Company) | [CompanyResponse](#recruiter.CompanyResponse) | Creates a company from a company message. Returns created company with ok response |
 | ReadCompany | [CompanyRequest](#recruiter.CompanyRequest) | [CompanyResponse](#recruiter.CompanyResponse) | Reads a company, queried by company code. Returns company with ok response |
-| UpdateCompany | [CompanyRequest](#recruiter.CompanyRequest) | [CompanyResponse](#recruiter.CompanyResponse) | Updates a student&#39;s name or dorm. Specified by `changeDorm` boolean. Returns new student. |
-| DeleteCompany | [CompanyRequest](#recruiter.CompanyRequest) | [CompanyResponse](#recruiter.CompanyResponse) | Deletes a registration queried by id and returns the deleted student |
+| UpdateCompany | [CompanyRequest](#recruiter.CompanyRequest) | [CompanyResponse](#recruiter.CompanyResponse) | Updates a company&#39;s name, number of openings, or brokerage. Returns the updated company |
+| DeleteCompany | [CompanyRequest](#recruiter.CompanyRequest) | [CompanyResponse](#recruiter.CompanyResponse) | Deletes a company queried by id and returns the deleted company |
 | ListCompanies | [Void](#recruiter.Void) | [CompanyResponse](#recruiter.CompanyResponse) stream | Lists all the registered companies. Returns a stream of companies |
 | ClearCompanies | [Void](#recruiter.Void) | [Void](#recruiter.Void) | Removes all registered companies |
 

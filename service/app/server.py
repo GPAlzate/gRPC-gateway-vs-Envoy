@@ -85,7 +85,7 @@ class RecruiterServicer(recruiter_pb2_grpc.RecruiterServicer):
         #get from database via helper method
         company = self.GetCompany(request)
 
-        #400 if the requested student doesn't exist
+        #400 if the requested company doesn't exist
         if not company.companyCode:
             context.set_details(f"Company with code {request.companyCode} does not exist!")
             context.set_code(grpc.StatusCode.INVALID_ARGUMENT)

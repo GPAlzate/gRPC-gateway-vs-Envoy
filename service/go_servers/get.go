@@ -27,7 +27,7 @@ func runGet() error {
     // Note: Make sure the gRPC server is running properly and accessible
     mux := runtime.NewServeMux()
     opts := []grpc.DialOption{grpc.WithInsecure()}
-    err := gw.RegisterRegistrationHandlerFromEndpoint(ctx, mux,  *getEndpoint, opts)
+    err := gw.RegisterRecruiterHandlerFromEndpoint(ctx, mux,  *getEndpoint, opts)
     if err != nil {
         return err
     }

@@ -10,19 +10,17 @@ class RecruiterStub(object):
 
   RPC Methods:
 
-  CreateCompany   -   adds a new student registration
+  CreateCompany   -   adds a new company
 
-  ReadCompany     -   returns a single student from database given an
-  id number
+  ReadCompany     -   returns a single company queried by company code
 
-  UpdateCompany   -   updates either the name or dorm of a student given
-  an id number request
+  UpdateCompany   -   updates the information of a company (except for code)
 
-  DeleteCompany   -   deletes a student given an id number request
+  DeleteCompany   -   deletes a company
 
-  ListCompany     -   lists all the students in the database
+  ListCompany     -   lists all the companies in the database
 
-  ClearCompanies   -   clears student registrations (not for client use)
+  ClearCompanies  -   clears company registrations (not for client use)
   """
 
   def __init__(self, channel):
@@ -69,23 +67,21 @@ class RecruiterServicer(object):
 
   RPC Methods:
 
-  CreateCompany   -   adds a new student registration
+  CreateCompany   -   adds a new company
 
-  ReadCompany     -   returns a single student from database given an
-  id number
+  ReadCompany     -   returns a single company queried by company code
 
-  UpdateCompany   -   updates either the name or dorm of a student given
-  an id number request
+  UpdateCompany   -   updates the information of a company (except for code)
 
-  DeleteCompany   -   deletes a student given an id number request
+  DeleteCompany   -   deletes a company
 
-  ListCompany     -   lists all the students in the database
+  ListCompany     -   lists all the companies in the database
 
-  ClearCompanies   -   clears student registrations (not for client use)
+  ClearCompanies  -   clears company registrations (not for client use)
   """
 
   def CreateCompany(self, request, context):
-    """/ Creates a company from a company message. Returns created company with
+    """Creates a company from a company message. Returns created company with
     ok response
     """
     context.set_code(grpc.StatusCode.UNIMPLEMENTED)
@@ -93,22 +89,22 @@ class RecruiterServicer(object):
     raise NotImplementedError('Method not implemented!')
 
   def ReadCompany(self, request, context):
-    """/ Reads a company, queried by company code. Returns company with ok response
+    """Reads a company, queried by company code. Returns company with ok response
     """
     context.set_code(grpc.StatusCode.UNIMPLEMENTED)
     context.set_details('Method not implemented!')
     raise NotImplementedError('Method not implemented!')
 
   def UpdateCompany(self, request, context):
-    """/ Updates a student's name or dorm. Specified by `changeDorm` boolean.
-    Returns new student.
+    """Updates a company's name, number of openings, or brokerage. Returns the
+    updated company
     """
     context.set_code(grpc.StatusCode.UNIMPLEMENTED)
     context.set_details('Method not implemented!')
     raise NotImplementedError('Method not implemented!')
 
   def DeleteCompany(self, request, context):
-    """/ Deletes a registration queried by id and returns the deleted student
+    """Deletes a company queried by id and returns the deleted company
     """
     context.set_code(grpc.StatusCode.UNIMPLEMENTED)
     context.set_details('Method not implemented!')

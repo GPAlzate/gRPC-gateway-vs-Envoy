@@ -217,7 +217,7 @@
 
       
         <h3 id="recruiter.Company">Company</h3>
-        <p>Represents a company with a name, code, numer of job openings,</p><p>and isBrokerage field</p>
+        <p>Represents a company with a name, code, number of job openings,</p><p>and brokerage status</p>
 
         
           <table class="field-table">
@@ -262,7 +262,7 @@
         
       
         <h3 id="recruiter.CompanyRequest">CompanyRequest</h3>
-        <p>A request made by a client, specifiying id of a student. `changeDorm` and </p><p>`new` are set when updating a student.</p>
+        <p>A request made by a client who specifies a unique company code. Fields 2-4</p><p>are set when updating a company's details.</p>
 
         
           <table class="field-table">
@@ -314,7 +314,7 @@
         
       
         <h3 id="recruiter.CompanyResponse">CompanyResponse</h3>
-        <p>A response sent by a server, returning a student message and a boolean field</p><p>indicating a successful transaction</p>
+        <p>A response sent by a server, returning a `Company` message and a boolean field</p><p>indicating a successful transaction</p>
 
         
           <table class="field-table">
@@ -359,7 +359,7 @@ id = 0, name = dorm = &#34;ERROR&#34; </p></td>
 
       
         <h3 id="recruiter.Recruiter">Recruiter</h3>
-        <p>Defines the services a client can use to register for housing.</p><p>RPC Methods:</p><p>CreateCompany   -   adds a new student registration</p><p>ReadCompany     -   returns a single student from database given an</p><p>id number</p><p>UpdateCompany   -   updates either the name or dorm of a student given</p><p>an id number request</p><p>DeleteCompany   -   deletes a student given an id number request</p><p>ListCompany     -   lists all the students in the database</p><p>ClearCompanies   -   clears student registrations (not for client use)</p>
+        <p>Defines the services a client can use to register for housing.</p><p>RPC Methods:</p><p>CreateCompany   -   adds a new company</p><p>ReadCompany     -   returns a single company queried by company code</p><p>UpdateCompany   -   updates the information of a company (except for code)</p><p>DeleteCompany   -   deletes a company</p><p>ListCompany     -   lists all the companies in the database</p><p>ClearCompanies  -   clears company registrations (not for client use)</p>
         <table class="enum-table">
           <thead>
             <tr><td>Method Name</td><td>Request Type</td><td>Response Type</td><td>Description</td></tr>
@@ -385,15 +385,15 @@ ok response</p></td>
                 <td>UpdateCompany</td>
                 <td><a href="#recruiter.CompanyRequest">CompanyRequest</a></td>
                 <td><a href="#recruiter.CompanyResponse">CompanyResponse</a></td>
-                <td><p>Updates a student&#39;s name or dorm. Specified by `changeDorm` boolean.
-Returns new student.</p></td>
+                <td><p>Updates a company&#39;s name, number of openings, or brokerage. Returns the
+updated company</p></td>
               </tr>
             
               <tr>
                 <td>DeleteCompany</td>
                 <td><a href="#recruiter.CompanyRequest">CompanyRequest</a></td>
                 <td><a href="#recruiter.CompanyResponse">CompanyResponse</a></td>
-                <td><p>Deletes a registration queried by id and returns the deleted student</p></td>
+                <td><p>Deletes a company queried by id and returns the deleted company</p></td>
               </tr>
             
               <tr>

@@ -55,23 +55,21 @@ option (grpc.gateway.protoc_gen_swagger.options.openapiv2_swagger) = {
  *
  * RPC Methods:
  *
- *      CreateCompany   -   adds a new student registration
+ *      CreateCompany   -   adds a new company
  *
- *      ReadCompany     -   returns a single student from database given an
- *                          id number
+ *      ReadCompany     -   returns a single company queried by company code
  *
- *      UpdateCompany   -   updates either the name or dorm of a student given
- *                          an id number request
+ *      UpdateCompany   -   updates the information of a company (except for code)
  *
- *      DeleteCompany   -   deletes a student given an id number request
+ *      DeleteCompany   -   deletes a company
  *
- *      ListCompany     -   lists all the students in the database
+ *      ListCompany     -   lists all the companies in the database
  *
- *      ClearCompanies   -   clears student registrations (not for client use)
+ *      ClearCompanies  -   clears company registrations (not for client use)
  */
 service Recruiter {
 
-    /// Creates a company from a company message. Returns created company with
+    // Creates a company from a company message. Returns created company with
     // ok response
     rpc CreateCompany(Company) returns (CompanyResponse){
         option (google.api.http) = {
@@ -97,7 +95,7 @@ service Recruiter {
 
     };
 
-    /// Reads a company, queried by company code. Returns company with ok response
+    // Reads a company, queried by company code. Returns company with ok response
     rpc ReadCompany(CompanyRequest) returns (CompanyResponse){
         option (google.api.http) = {
             get: "/{companyCode}"
@@ -121,8 +119,8 @@ service Recruiter {
 
     };
 
-    /// Updates a student's name or dorm. Specified by `changeDorm` boolean.
-    // Returns new student.
+    // Updates a company's name, number of openings, or brokerage. Returns the
+    // updated company
     rpc UpdateCompany(CompanyRequest) returns (CompanyResponse){
         option (google.api.http) = {
             put: "/update/{companyCode}"
@@ -130,7 +128,7 @@ service Recruiter {
         };
     };
 
-    /// Deletes a registration queried by id and returns the deleted student
+    // Deletes a company queried by id and returns the deleted company
     rpc DeleteCompany(CompanyRequest) returns (CompanyResponse){
         option (google.api.http) = {
             delete: "/delete/{companyCode}"
@@ -174,8 +172,8 @@ service Recruiter {
 message Void {}
 
 /**
- * Represents a company with a name, code, numer of job openings,
- *  and isBrokerage field
+ * Represents a company with a name, code, number of job openings,
+ * and brokerage status
  */
 message Company {
     
@@ -193,8 +191,8 @@ message Company {
 }
 
 /**
- * A request made by a client, specifiying id of a student. `changeDorm` and 
- * `new` are set when updating a student.
+ * A request made by a client who specifies a unique company code. Fields 2-4
+ * are set when updating a company's details.
  */
 message CompanyRequest {
 
@@ -215,7 +213,7 @@ message CompanyRequest {
 }
 
 /**
- * A response sent by a server, returning a student message and a boolean field
+ * A response sent by a server, returning a `Company` message and a boolean field
  * indicating a successful transaction
  */
 message CompanyResponse{

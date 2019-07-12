@@ -60,8 +60,8 @@ func (m *Void) XXX_DiscardUnknown() {
 var xxx_messageInfo_Void proto.InternalMessageInfo
 
 //*
-// Represents a company with a name, code, numer of job openings,
-//  and isBrokerage field
+// Represents a company with a name, code, number of job openings,
+// and brokerage status
 type Company struct {
 	// unique id for each company
 	CompanyCode int32 `protobuf:"varint,1,opt,name=companyCode,proto3" json:"companyCode,omitempty"`
@@ -130,8 +130,8 @@ func (m *Company) GetIsBrokerage() bool {
 }
 
 //*
-// A request made by a client, specifiying id of a student. `changeDorm` and
-// `new` are set when updating a student.
+// A request made by a client who specifies a unique company code. Fields 2-4
+// are set when updating a company's details.
 type CompanyRequest struct {
 	// unique id for each company
 	CompanyCode int32 `protobuf:"varint,1,opt,name=companyCode,proto3" json:"companyCode,omitempty"`
@@ -209,7 +209,7 @@ func (m *CompanyRequest) GetOk() bool {
 }
 
 //*
-// A response sent by a server, returning a student message and a boolean field
+// A response sent by a server, returning a `Company` message and a boolean field
 // indicating a successful transaction
 type CompanyResponse struct {
 	//*
@@ -334,15 +334,15 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type RecruiterClient interface {
-	/// Creates a company from a company message. Returns created company with
+	// Creates a company from a company message. Returns created company with
 	// ok response
 	CreateCompany(ctx context.Context, in *Company, opts ...grpc.CallOption) (*CompanyResponse, error)
-	/// Reads a company, queried by company code. Returns company with ok response
+	// Reads a company, queried by company code. Returns company with ok response
 	ReadCompany(ctx context.Context, in *CompanyRequest, opts ...grpc.CallOption) (*CompanyResponse, error)
-	/// Updates a student's name or dorm. Specified by `changeDorm` boolean.
-	// Returns new student.
+	// Updates a company's name, number of openings, or brokerage. Returns the
+	// updated company
 	UpdateCompany(ctx context.Context, in *CompanyRequest, opts ...grpc.CallOption) (*CompanyResponse, error)
-	/// Deletes a registration queried by id and returns the deleted student
+	// Deletes a company queried by id and returns the deleted company
 	DeleteCompany(ctx context.Context, in *CompanyRequest, opts ...grpc.CallOption) (*CompanyResponse, error)
 	/// Lists all the registered companies. Returns a stream of companies
 	ListCompanies(ctx context.Context, in *Void, opts ...grpc.CallOption) (Recruiter_ListCompaniesClient, error)
@@ -437,15 +437,15 @@ func (c *recruiterClient) ClearCompanies(ctx context.Context, in *Void, opts ...
 
 // RecruiterServer is the server API for Recruiter service.
 type RecruiterServer interface {
-	/// Creates a company from a company message. Returns created company with
+	// Creates a company from a company message. Returns created company with
 	// ok response
 	CreateCompany(context.Context, *Company) (*CompanyResponse, error)
-	/// Reads a company, queried by company code. Returns company with ok response
+	// Reads a company, queried by company code. Returns company with ok response
 	ReadCompany(context.Context, *CompanyRequest) (*CompanyResponse, error)
-	/// Updates a student's name or dorm. Specified by `changeDorm` boolean.
-	// Returns new student.
+	// Updates a company's name, number of openings, or brokerage. Returns the
+	// updated company
 	UpdateCompany(context.Context, *CompanyRequest) (*CompanyResponse, error)
-	/// Deletes a registration queried by id and returns the deleted student
+	// Deletes a company queried by id and returns the deleted company
 	DeleteCompany(context.Context, *CompanyRequest) (*CompanyResponse, error)
 	/// Lists all the registered companies. Returns a stream of companies
 	ListCompanies(*Void, Recruiter_ListCompaniesServer) error

@@ -209,7 +209,7 @@
     },
     "/update/{companyCode}": {
       "put": {
-        "summary": "/ Updates a student's name or dorm. Specified by `changeDorm` boolean.\nReturns new student.",
+        "summary": "Updates a company's name, number of openings, or brokerage. Returns the\nupdated company",
         "operationId": "UpdateCompany",
         "responses": {
           "200": {
@@ -377,7 +377,7 @@
           "title": "determines if the company is brokerage"
         }
       },
-      "title": "*\nRepresents a company with a name, code, numer of job openings,\n and isBrokerage field"
+      "title": "*\nRepresents a company with a name, code, number of job openings,\nand brokerage status"
     },
     "recruiterCompanyRequest": {
       "type": "object",
@@ -407,7 +407,7 @@
           "title": "True if transaction is successful, false otherwise"
         }
       },
-      "description": "*\nA request made by a client, specifiying id of a student. `changeDorm` and \n`new` are set when updating a student."
+      "description": "*\nA request made by a client who specifies a unique company code. Fields 2-4\nare set when updating a company's details."
     },
     "recruiterCompanyResponse": {
       "type": "object",
@@ -422,7 +422,7 @@
           "title": "True if transaction is successful, false otherwise"
         }
       },
-      "title": "*\nA response sent by a server, returning a student message and a boolean field\nindicating a successful transaction"
+      "title": "*\nA response sent by a server, returning a `Company` message and a boolean field\nindicating a successful transaction"
     },
     "recruiterVoid": {
       "type": "object",

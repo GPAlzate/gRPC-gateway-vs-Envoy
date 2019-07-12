@@ -27,7 +27,7 @@ func runPut() error {
     // Note: Make sure the gRPC server is running properly and accessible
     mux := runtime.NewServeMux()
     opts := []grpc.DialOption{grpc.WithInsecure()}
-    err := gw.RegisterRegistrationHandlerFromEndpoint(ctx, mux,  *putEndpoint, opts)
+    err := gw.RegisterRecruiterHandlerFromEndpoint(ctx, mux,  *putEndpoint, opts)
     if err != nil {
         return err
     }

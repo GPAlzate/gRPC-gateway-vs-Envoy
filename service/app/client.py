@@ -65,7 +65,7 @@ def ClientUpdateCompany(stub):
     print(f"{response.company}\nUpdated successfully")
 
 def ClientDeleteCompany(stub):
-    #keep asking for student id number to search for student to delete
+    #keep asking for provided company code to search for company to delete
     request = None
     while 1:
         code = int(input(CODE_PROMPT))
