@@ -1,6 +1,6 @@
 import grpc
 import random, logging
-from proto import registration_pb2, registration_pb2_grpc
+from proto import recruiter_pb2, recruiter_pb2_grpc
 
 ID_PROMPT = "\nEnter your id (8-digit number): "
 NAME_PROMPT = "Enter your name (first and last): "
