@@ -1,18 +1,17 @@
 syntax = "proto3";
-package housing;
+package recruiter;
 
 import "google/api/annotations.proto";
 import "protoc-gen-swagger/options/annotations.proto";
 
 option (grpc.gateway.protoc_gen_swagger.options.openapiv2_swagger) = {
 	info: {
-		title: "Housing Registration";
+		title: "Simple demo CRUD app for companies hiring on Kalibrr platform";
 		version: "1.0";
     };
     schemes: HTTP;
     consumes: "application/json";
     produces: "application/json";
-
 
     responses: {
 		key: "400";
@@ -56,27 +55,27 @@ option (grpc.gateway.protoc_gen_swagger.options.openapiv2_swagger) = {
  *
  * RPC Methods:
  *
- *      CreateStudent   -   adds a new student registration
+ *      CreateCompany   -   adds a new student registration
  *
- *      ReadStudent     -   returns a single student from database given an
+ *      ReadCompany     -   returns a single student from database given an
  *                          id number
  *
- *      UpdateStudent   -   updates either the name or dorm of a student given
+ *      UpdateCompany   -   updates either the name or dorm of a student given
  *                          an id number request
  *
- *      DeleteStudent   -   deletes a student given an id number request
+ *      DeleteCompany   -   deletes a student given an id number request
  *
- *      ListStudent     -   lists all the students in the database
+ *      ListCompany     -   lists all the students in the database
  *
- *      ClearStudents   -   clears student registrations (not for client use)
+ *      ClearCompanies   -   clears student registrations (not for client use)
  */
-service Registration {
+service Recruiter {
 
-    /// Creates a student from a student message. Returns created student with
+    /// Creates a company from a company message. Returns created company with
     // ok response
-    rpc CreateStudent(Student) returns (StudentResponse){
+    rpc CreateCompany(Company) returns (CompanyResponse){
         option (google.api.http) = {
-            post: "/students/register"
+            post: "/register"
             body: "*"
         };
 
@@ -98,16 +97,15 @@ service Registration {
 
     };
 
-    /// Reads a student, queried by id number. Returns student with ok response
-    rpc ReadStudent(StudentRequest) returns (StudentResponse){
-
+    /// Reads a company, queried by company code. Returns company with ok response
+    rpc ReadCompany(CompanyRequest) returns (CompanyResponse){
         option (google.api.http) = {
-            get: "/students/{id}"
+            get: "/{companyCode}"
         };
 
         option (grpc.gateway.protoc_gen_swagger.options.openapiv2_operation) = {
-            description: "Student with {id} does not exist!";
-            summary: "ID has not been registered for housing. Cannot delete";
+            description: "Company with {companyCode} does not exist!";
+            summary: "Company is not in the database. Cannot delete";
             responses: {
                 key: "400";
                 value: {
@@ -125,21 +123,21 @@ service Registration {
 
     /// Updates a student's name or dorm. Specified by `changeDorm` boolean.
     // Returns new student.
-    rpc UpdateStudent(StudentRequest) returns (StudentResponse){
+    rpc UpdateCompany(CompanyRequest) returns (CompanyResponse){
         option (google.api.http) = {
-            put: "/students/update/{id}"
+            put: "/update/{companyCode}"
             body: "*"
         };
     };
 
     /// Deletes a registration queried by id and returns the deleted student
-    rpc DeleteStudent(StudentRequest) returns (StudentResponse){
+    rpc DeleteCompany(CompanyRequest) returns (CompanyResponse){
         option (google.api.http) = {
-            delete: "/students/delete/{id}"
+            delete: "/delete/{companyCode}"
         };
 
         option (grpc.gateway.protoc_gen_swagger.options.openapiv2_operation) = {
-            description: "Student with {id} does not exist!";
+            description: "Company with {companyCode} does not exist!";
             summary: "ID has not been registered for housing. Cannot delete";
             responses: {
                 key: "400";
@@ -155,17 +153,17 @@ service Registration {
         };
     };
 
-    /// Lists all the registered students. Returns a stream of students
-    rpc ListStudents(Void) returns (stream StudentResponse){
+    /// Lists all the registered companies. Returns a stream of companies
+    rpc ListCompanies(Void) returns (stream CompanyResponse){
         option (google.api.http) = {
-            get: "/students"
+            get: "/companies"
         };
     };
 
-    /// Removes all registered students
-    rpc ClearStudents(Void) returns (Void){
+    /// Removes all registered companies
+    rpc ClearCompanies(Void) returns (Void){
         option (google.api.http) = {
-            delete: "/students/clear"
+            delete: "/clear"
         };
     };
 }
@@ -176,47 +174,57 @@ service Registration {
 message Void {}
 
 /**
- * Represents a student with a unique id, a name, and a dorm
+ * Represents a company with a name, code, numer of job openings,
+ *  and isBrokerage field
  */
-message Student {
+message Company {
     
-    /* unique id for each student */
-    int32 id = 1;
+    /* unique id for each company */
+    int32 companyCode = 1;
 
-    /* first and last name of a student */
-    string name = 2;
+    /* name of the company */
+    string companyName = 2;
 
-    /* dorm choice */
-    string dorm = 3;
+    /* how many jobs are available */
+    int32 numOpenings = 3;
+
+    /* determines if the company is brokerage */
+    bool isBrokerage = 4;
 }
 
 /**
  * A request made by a client, specifiying id of a student. `changeDorm` and 
  * `new` are set when updating a student.
  */
-message StudentRequest {
+message CompanyRequest {
 
-    /* Unique id student query */
-    int32 id = 1;
+    /* unique id for each company */
+    int32 companyCode = 1;
 
-    /* True if the client requests to change the dorm, false to change name */
-    bool changeDorm = 2;
+    /* name of the company */
+    string companyName = 2;
 
-    /* The updated value */
-    string new = 3;
+    /* how many jobs are available */
+    int32 numOpenings = 3;
+
+    /* determines if the company is brokerage */
+    bool isBrokerage = 4;
+
+    /* True if transaction is successful, false otherwise */
+    bool ok = 5;
 }
 
 /**
  * A response sent by a server, returning a student message and a boolean field
  * indicating a successful transaction
  */
-message StudentResponse{
+message CompanyResponse{
 
     /**
      * The deleted, created, or retrieved student. If response is not `ok`,
      * id = 0, name = dorm = "ERROR"
      */
-    Student student = 1;
+    Company company = 1;
 
     /* True if transaction is successful, false otherwise */
     bool ok = 2;

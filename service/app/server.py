@@ -1,6 +1,6 @@
 from concurrent import futures
 from app import config
-from proto import registration_pb2, registration_pb2_grpc
+from proto import recruiter_pb2, recruiter_pb2_grpc
 import threading
 
 import time, math, logging
@@ -23,7 +23,7 @@ def create_db():
                 database = config.DATABASE
                 )
 
-        print(f"Connect to {config.DATABASE} successful YEETYA")
+        print(f"Connect to {config.DATABASE} successful")
         print(sys.version)
         return conn
 
@@ -31,7 +31,7 @@ def create_db():
         print("Database connection failure: Quitting...")
         return None
 
-class RegistrationServicer(registration_pb2_grpc.RegistrationServicer): 
+class RecruiterServicer(recruiter_pb2_grpc.RecruiterServicer): 
 
     def __init__(self):
         self.db = create_db()
@@ -40,176 +40,156 @@ class RegistrationServicer(registration_pb2_grpc.RegistrationServicer):
             return
 
         self.cur = self.db.cursor()
-        self.cur.execute("CREATE TABLE IF NOT EXISTS Student("
-                        "id INT PRIMARY KEY,"
-                        "name VARCHAR (255) NOT NULL,"
-                        "dorm VARCHAR (15)NOT NULL"
+        self.cur.execute("CREATE TABLE IF NOT EXISTS companies("
+                        "companyCode INT PRIMARY KEY,"
+                        "companyName VARCHAR (255) NOT NULL,"
+                        "numOpenings INT NOT NULL CHECK(numOpenings > 0),"
+                        "isBrokerage BOOLEAN NOT NULL"
                         ")")
 
-    def CreateStudent(self, request, context):
-
-        '''
-        id = request.id
-        name = request.name
-        dorm = request.dorm
-        student = registration_pb2.Student(id = id, name = name, dorm = dorm)
-        return registration_pb2.StudentResponse(student=student, ok=1)
-
-        '''
+    def CreateCompany(self, request, context):
+        """
+            Registers a company in the Kalibrr database. Will return a not OK
+            response for any errors.
+        """
         try:
-            id = request.id
-            name = request.name
-            dorm = request.dorm
-            student = registration_pb2.Student(id = id, name = name, dorm = dorm)
+            #make new company request
+            code = request.companyCode
+            name = request.companyName
+            ops = request.numOpenings
+            brok = request.isBrokerage
 
+            company = recruiter_pb2.Company(companyCode = code,
+                    companyName = name, numOpenings = ops, isBrokerage = brok)
+
+            #insert new company in a thread safe manner
             with _lock:
                 try:
-                    self.cur.execute("INSERT INTO student (id, name, dorm) "
-                            f"VALUES ({id}, {name}, {dorm})")
+                    self.cur.execute("INSERT INTO companies (companyCode, companyName, "
+                                        "numOpenings, isBrokerage) "
+                                        f"VALUES ({code}, {name}, {ops}, {brok})")
                 except psycopg2.IntegrityError:
                     self.db.rollback()
-                    return registration_pb2.StudentResponse(student=student, ok=0)
+                    return recruiter_pb2.CompanyResponse(company=company)
                 else:
                     self.db.commit()
-                    return registration_pb2.StudentResponse(student=student, ok=1)
+                    return recruiter_pb2.CompanyResponse(company=company, ok=1)
         except Exception as e:
             print(str(e))
     
-    def ReadStudent(self, request, context):
+    def ReadCompany(self, request, context):
+        """
+            Gets a company from the Kalibrr database, queried by a unique
+            company code.
+        """
         #get from database via helper method
-        student = self.GetStudent(request)
+        company = self.GetCompany(request)
 
         #400 if the requested student doesn't exist
-        if not student.id:
-            context.set_details(f"Student with ID {request.id} does not exist!")
+        if not company.companyCode:
+            context.set_details(f"Company with code {request.companyCode} does not exist!")
             context.set_code(grpc.StatusCode.INVALID_ARGUMENT)
-            return registration_pb2.StudentResponse(student=student, ok=0)
+            return recruiter_pb2.CompanyResponse(company=company, ok=0)
 
-        return registration_pb2.StudentResponse(student=student, ok=1)
+        return recruiter_pb2.CompanyResponse(company=company, ok=1)
 
-    def UpdateStudent(self, request, context):
-        '''
-        id = request.id
-        name = ''.join(random.sample(_CHARS, 8)) + " " + ''.join(random.sample(_CHARS, 8))
-        dorm = ''.join(random.sample(_CHARS, 12)) 
-        if request.changeDorm:
-            dorm = request.new
-        else:
-            name = request.new
-        student = registration_pb2.Student(id = id, name = name, dorm = dorm)
-        return registration_pb2.StudentResponse(student=student, ok=1) 
-
-        '''
-
+    def UpdateCompany(self, request, context):
+        """
+            Allows changes to be made to a registered company. Can change the
+            company name or the number of job openings.
+        """
         try:
-            field = "dorm" if request.changeDorm else "name"
-            set_new = f"UPDATE student SET {field}={request.new} WHERE id={request.id} RETURNING *"
+            code = request.companyCode
+            name = request.companyName
+            ops = request.numOpenings
+            brok = request.isBrokerage
+
+            setNewFields = "SET "
+            if name:
+                setNewFields += f"companyName={name},"
+            if ops:
+                setNewFields += f"numOpenings={ops},"
+            if brok is not None:
+                setNewFields += f"isBrokerage={brok}"
+
+            set_new = f"UPDATE companies {setNewFields.rstrip(',')} WHERE companyCode={code} RETURNING *"
 
             with _lock:
-                try:
-                    self.cur.execute(set_new)
-                    response = self.cur.fetchone()
-                    if response is None:
-                        context.set_details(f"Student with ID {request.id} does not exist!")
-                        context.set_code(grpc.StatusCode.INVALID_ARGUMENT)
-                        student = registration_pb2.Student(id=0)
-                        return registration_pb2.StudentResponse(student=student, ok=0)
-
-                    self.db.commit()
-                    student = registration_pb2.Student(id=response[0], name=response[1],
-                                                        dorm=response[2])
-                    #respond back to client with StudentResponse
-                    return registration_pb2.StudentResponse(student=student, ok=1)
-                except Exception as e:
-                    print(str(e))
+                self.cur.execute(set_new)
+                response = self.cur.fetchone()
+                return self.SubmitResponse(code, response, context)
         except Exception as e:
             print(str(e))
 
-    def DeleteStudent(self, request, context):
-
-        '''
-        name = ''.join(random.sample(_CHARS, 8)) + " " + ''.join(random.sample(_CHARS, 8))
-        dorm = ''.join(random.sample(_CHARS, 12))
-        student = registration_pb2.Student(id=request.id, name=name, dorm=dorm) 
-        return registration_pb2.StudentResponse(student=student, ok=1)
-
-        '''
+    def DeleteCompany(self, request, context):
         try:
-
+            code = request.companyCode
             with _lock:
                 #delete and return
-                self.cur.execute(f"DELETE FROM student WHERE id={request.id} "
-                                "RETURNING *")
+                self.cur.execute(f"DELETE FROM companies "
+                                f"WHERE companyCode={code} RETURNING *")
                 response = self.cur.fetchone()
-
-                #400 response
-                if response is None:
-                    context.set_details(f"Student with ID {request.id} does not exist!!")
-                    context.set_code(grpc.StatusCode.UNKNOWN)
-                    badstudent = registration_pb2.Student()
-                    return registration_pb2.StudentResponse(student=badstudent, ok=0)
-
-                self.db.commit()
-                student = registration_pb2.Student(id=response[0], name=response[1],
-                                                    dorm = response[2])
-                #respond back to client with StudentResponse
-                return registration_pb2.StudentResponse(student=student, ok=1)
+                return self.SubmitResponse(code, response, context)
         except Exception as e:
             print(str(e))
 
-    def ListStudents(self, request, context):
-
-        '''
-        for _ in range(random.randint(100, 1000)):
-            id = random.randint(10000000, 99999999)
-            name = ''.join(random.sample(_CHARS, 8)) + " " + ''.join(random.sample(_CHARS, 8))
-            dorm = ''.join(random.sample(_CHARS, 12))
-            student = registration_pb2.Student(id=id, name=name, dorm=dorm) 
-            yield registration_pb2.StudentResponse(student=student, ok=1)
-
-        '''
-
+    def ListCompanies(self, request, context):
         try:
             with _lock:
-                self.cur.execute("SELECT * FROM student")
+                self.cur.execute("SELECT * FROM companies")
                 rows = self.cur.fetchall()
                 for row in rows:
-                    student = registration_pb2.Student(id=row[0], name=row[1], dorm=row[2])
-                    response = registration_pb2.StudentResponse(student=student, ok=1)
-                    yield response
+                    company = recruiter_pb2.Company(companyCode=row[0], companyName=row[1],
+                                                numOpenings=row[2], isBrokerage=row[3])
+                    yield recruiter_pb2.CompanyResponse(company=company, ok=1)
         except Exception as e:
             print(str(e))
 
-    def GetStudent(self, request):
-        '''
-        name = ''.join(random.sample(_CHARS, 8)) + " " + ''.join(random.sample(_CHARS, 8))
-        dorm = ''.join(random.sample(_CHARS, 12))
-        return registration_pb2.Student(id=request.id, name=name, dorm=dorm)
-
-        '''
+    def GetCompany(self, request):
+        """
+            Helper method gets one company from the database, queried by unique code
+        """
         try:
             with _lock:
-                self.cur.execute(f"SELECT * FROM student WHERE id={request.id}")
+                self.cur.execute(f"SELECT * FROM companies WHERE " 
+                                    f"companyCode={request.companyCode}")
                 entry = self.cur.fetchone()
+
+                #returns with company code 0 by default
                 if entry is None:
-                    return registration_pb2.Student(id=0)
-                return registration_pb2.Student(id=entry[0], name=entry[1], dorm=entry[2])
+                    return recruiter_pb2.Company()
+                return recruiter_pb2.Company(companyCode=entry[0], companyName=entry[1],
+                                            numOpenings=entry[2], isBrokerage=entry[3])
         except Exception as e:
             print(str(e))
 
-    def ClearStudents(self, request, context):
-        '''
-        No client app for this
-        '''
-        self.cur.execute("TRUNCATE student")
+    def ClearCompanies(self, request, context):
+        """
+            No client app for this; clears the entire database of companies. For
+            testing purposes only
+        """
+        self.cur.execute("TRUNCATE company")
         self.db.commit()
-        return registration_pb2.Void()
+        return recruiter_pb2.Void()
+
+    def SubmitResponse(self, code, response, context):
+        #400 response
+        if response is None:
+            context.set_details(f"Company with code {code} does not exist!")
+            context.set_code(grpc.StatusCode.INVALID_ARGUMENT)
+            company = recruiter_pb2.Company()
+            return recruiter_pb2.CompanyResponse(company=company, ok=0)
+
+        self.db.commit()
+        company = recruiter_pb2.Company(companyCode=response[0], companyName=response[1],
+                                    numOpenings=response[2], isBrokerage=response[3])
+        return recruiter_pb2.CompanyResponse(company=company, ok=1)
 
 
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
-    registration_pb2_grpc.add_RegistrationServicer_to_server(
-            RegistrationServicer(), server)
+    recruiter_pb2_grpc.add_RecruiterServicer_to_server(
+            RecruiterServicer(), server)
     server.add_insecure_port('[::]:50051')
     server.start()
     try:

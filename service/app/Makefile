@@ -3,9 +3,9 @@ BINARY_FLAGS := --include_imports --include_source_info
 GRPC_FLAGS := -I.. -I$(GOPATH)/src/github.com/grpc-ecosystem/grpc-gateway/ \
 					-I$(GOPATH)/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis
 
-OUTPUT := --python_out=.. --grpc_python_out=.. --descriptor_set_out=../proto/registration.pb
+OUTPUT := --python_out=.. --grpc_python_out=.. --descriptor_set_out=../proto/recruiter.pb
 
-PROTO := ../proto/registration.proto
+PROTO := ../proto/recruiter.proto
 
 all: $(PROTO)
 	make proto
@@ -31,10 +31,10 @@ swagger: $(PROTO)
 	rmdir ../swagger/proto;
 
 docs:
-	protoc $(GRPC_FLAGS) --doc_out=../.. --doc_opt=markdown,README.md ../proto/registration.proto; 
-	protoc $(GRPC_FLAGS) --doc_out=../.. --doc_opt=html,index.html ../proto/registration.proto;
+	protoc $(GRPC_FLAGS) --doc_out=../.. --doc_opt=markdown,README.md ../proto/recruiter.proto; 
+	protoc $(GRPC_FLAGS) --doc_out=../.. --doc_opt=html,index.html ../proto/recruiter.proto;
 
 clean:
-	rm ../proto/{registration_*,registration.pb};
+	rm ../proto/{recruiter*,recruiter.pb};
 	rm ../proxy_stubs/*;
 	rm ../swagger/*;

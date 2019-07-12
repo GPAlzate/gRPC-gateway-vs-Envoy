@@ -175,30 +175,30 @@
         
           
           <li>
-            <a href="#proto%2fregistration.proto">proto/registration.proto</a>
+            <a href="#proto%2frecruiter.proto">proto/recruiter.proto</a>
             <ul>
               
                 <li>
-                  <a href="#housing.Student"><span class="badge">M</span>Student</a>
+                  <a href="#recruiter.Company"><span class="badge">M</span>Company</a>
                 </li>
               
                 <li>
-                  <a href="#housing.StudentRequest"><span class="badge">M</span>StudentRequest</a>
+                  <a href="#recruiter.CompanyRequest"><span class="badge">M</span>CompanyRequest</a>
                 </li>
               
                 <li>
-                  <a href="#housing.StudentResponse"><span class="badge">M</span>StudentResponse</a>
+                  <a href="#recruiter.CompanyResponse"><span class="badge">M</span>CompanyResponse</a>
                 </li>
               
                 <li>
-                  <a href="#housing.Void"><span class="badge">M</span>Void</a>
+                  <a href="#recruiter.Void"><span class="badge">M</span>Void</a>
                 </li>
               
               
               
               
                 <li>
-                  <a href="#housing.Registration"><span class="badge">S</span>Registration</a>
+                  <a href="#recruiter.Recruiter"><span class="badge">S</span>Recruiter</a>
                 </li>
               
             </ul>
@@ -211,13 +211,13 @@
     
       
       <div class="file-heading">
-        <h2 id="proto/registration.proto">proto/registration.proto</h2><a href="#title">Top</a>
+        <h2 id="proto/recruiter.proto">proto/recruiter.proto</h2><a href="#title">Top</a>
       </div>
       <p></p>
 
       
-        <h3 id="housing.Student">Student</h3>
-        <p>Represents a student with a unique id, a name, and a dorm</p>
+        <h3 id="recruiter.Company">Company</h3>
+        <p>Represents a company with a name, code, numer of job openings,</p><p>and isBrokerage field</p>
 
         
           <table class="field-table">
@@ -227,24 +227,31 @@
             <tbody>
               
                 <tr>
-                  <td>id</td>
+                  <td>companyCode</td>
                   <td><a href="#int32">int32</a></td>
                   <td></td>
-                  <td><p>unique id for each student </p></td>
+                  <td><p>unique id for each company </p></td>
                 </tr>
               
                 <tr>
-                  <td>name</td>
+                  <td>companyName</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p>first and last name of a student </p></td>
+                  <td><p>name of the company </p></td>
                 </tr>
               
                 <tr>
-                  <td>dorm</td>
-                  <td><a href="#string">string</a></td>
+                  <td>numOpenings</td>
+                  <td><a href="#int32">int32</a></td>
                   <td></td>
-                  <td><p>dorm choice </p></td>
+                  <td><p>how many jobs are available </p></td>
+                </tr>
+              
+                <tr>
+                  <td>isBrokerage</td>
+                  <td><a href="#bool">bool</a></td>
+                  <td></td>
+                  <td><p>determines if the company is brokerage </p></td>
                 </tr>
               
             </tbody>
@@ -254,7 +261,7 @@
 
         
       
-        <h3 id="housing.StudentRequest">StudentRequest</h3>
+        <h3 id="recruiter.CompanyRequest">CompanyRequest</h3>
         <p>A request made by a client, specifiying id of a student. `changeDorm` and </p><p>`new` are set when updating a student.</p>
 
         
@@ -265,24 +272,38 @@
             <tbody>
               
                 <tr>
-                  <td>id</td>
+                  <td>companyCode</td>
                   <td><a href="#int32">int32</a></td>
                   <td></td>
-                  <td><p>Unique id student query </p></td>
+                  <td><p>unique id for each company </p></td>
                 </tr>
               
                 <tr>
-                  <td>changeDorm</td>
-                  <td><a href="#bool">bool</a></td>
-                  <td></td>
-                  <td><p>True if the client requests to change the dorm, false to change name </p></td>
-                </tr>
-              
-                <tr>
-                  <td>new</td>
+                  <td>companyName</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p>The updated value </p></td>
+                  <td><p>name of the company </p></td>
+                </tr>
+              
+                <tr>
+                  <td>numOpenings</td>
+                  <td><a href="#int32">int32</a></td>
+                  <td></td>
+                  <td><p>how many jobs are available </p></td>
+                </tr>
+              
+                <tr>
+                  <td>isBrokerage</td>
+                  <td><a href="#bool">bool</a></td>
+                  <td></td>
+                  <td><p>determines if the company is brokerage </p></td>
+                </tr>
+              
+                <tr>
+                  <td>ok</td>
+                  <td><a href="#bool">bool</a></td>
+                  <td></td>
+                  <td><p>True if transaction is successful, false otherwise </p></td>
                 </tr>
               
             </tbody>
@@ -292,7 +313,7 @@
 
         
       
-        <h3 id="housing.StudentResponse">StudentResponse</h3>
+        <h3 id="recruiter.CompanyResponse">CompanyResponse</h3>
         <p>A response sent by a server, returning a student message and a boolean field</p><p>indicating a successful transaction</p>
 
         
@@ -303,8 +324,8 @@
             <tbody>
               
                 <tr>
-                  <td>student</td>
-                  <td><a href="#housing.Student">Student</a></td>
+                  <td>company</td>
+                  <td><a href="#recruiter.Company">Company</a></td>
                   <td></td>
                   <td><p>The deleted, created, or retrieved student. If response is not `ok`,
 id = 0, name = dorm = &#34;ERROR&#34; </p></td>
@@ -324,7 +345,7 @@ id = 0, name = dorm = &#34;ERROR&#34; </p></td>
 
         
       
-        <h3 id="housing.Void">Void</h3>
+        <h3 id="recruiter.Void">Void</h3>
         <p>Empty message for rpc's that require no request (clear and list)</p>
 
         
@@ -337,8 +358,8 @@ id = 0, name = dorm = &#34;ERROR&#34; </p></td>
       
 
       
-        <h3 id="housing.Registration">Registration</h3>
-        <p>Defines the services a client can use to register for housing.</p><p>RPC Methods:</p><p>CreateStudent   -   adds a new student registration</p><p>ReadStudent     -   returns a single student from database given an</p><p>id number</p><p>UpdateStudent   -   updates either the name or dorm of a student given</p><p>an id number request</p><p>DeleteStudent   -   deletes a student given an id number request</p><p>ListStudent     -   lists all the students in the database</p><p>ClearStudents   -   clears student registrations (not for client use)</p>
+        <h3 id="recruiter.Recruiter">Recruiter</h3>
+        <p>Defines the services a client can use to register for housing.</p><p>RPC Methods:</p><p>CreateCompany   -   adds a new student registration</p><p>ReadCompany     -   returns a single student from database given an</p><p>id number</p><p>UpdateCompany   -   updates either the name or dorm of a student given</p><p>an id number request</p><p>DeleteCompany   -   deletes a student given an id number request</p><p>ListCompany     -   lists all the students in the database</p><p>ClearCompanies   -   clears student registrations (not for client use)</p>
         <table class="enum-table">
           <thead>
             <tr><td>Method Name</td><td>Request Type</td><td>Response Type</td><td>Description</td></tr>
@@ -346,47 +367,47 @@ id = 0, name = dorm = &#34;ERROR&#34; </p></td>
           <tbody>
             
               <tr>
-                <td>CreateStudent</td>
-                <td><a href="#housing.Student">Student</a></td>
-                <td><a href="#housing.StudentResponse">StudentResponse</a></td>
-                <td><p>Creates a student from a student message. Returns created student with
+                <td>CreateCompany</td>
+                <td><a href="#recruiter.Company">Company</a></td>
+                <td><a href="#recruiter.CompanyResponse">CompanyResponse</a></td>
+                <td><p>Creates a company from a company message. Returns created company with
 ok response</p></td>
               </tr>
             
               <tr>
-                <td>ReadStudent</td>
-                <td><a href="#housing.StudentRequest">StudentRequest</a></td>
-                <td><a href="#housing.StudentResponse">StudentResponse</a></td>
-                <td><p>Reads a student, queried by id number. Returns student with ok response</p></td>
+                <td>ReadCompany</td>
+                <td><a href="#recruiter.CompanyRequest">CompanyRequest</a></td>
+                <td><a href="#recruiter.CompanyResponse">CompanyResponse</a></td>
+                <td><p>Reads a company, queried by company code. Returns company with ok response</p></td>
               </tr>
             
               <tr>
-                <td>UpdateStudent</td>
-                <td><a href="#housing.StudentRequest">StudentRequest</a></td>
-                <td><a href="#housing.StudentResponse">StudentResponse</a></td>
+                <td>UpdateCompany</td>
+                <td><a href="#recruiter.CompanyRequest">CompanyRequest</a></td>
+                <td><a href="#recruiter.CompanyResponse">CompanyResponse</a></td>
                 <td><p>Updates a student&#39;s name or dorm. Specified by `changeDorm` boolean.
 Returns new student.</p></td>
               </tr>
             
               <tr>
-                <td>DeleteStudent</td>
-                <td><a href="#housing.StudentRequest">StudentRequest</a></td>
-                <td><a href="#housing.StudentResponse">StudentResponse</a></td>
+                <td>DeleteCompany</td>
+                <td><a href="#recruiter.CompanyRequest">CompanyRequest</a></td>
+                <td><a href="#recruiter.CompanyResponse">CompanyResponse</a></td>
                 <td><p>Deletes a registration queried by id and returns the deleted student</p></td>
               </tr>
             
               <tr>
-                <td>ListStudents</td>
-                <td><a href="#housing.Void">Void</a></td>
-                <td><a href="#housing.StudentResponse">StudentResponse</a> stream</td>
-                <td><p>Lists all the registered students. Returns a stream of students</p></td>
+                <td>ListCompanies</td>
+                <td><a href="#recruiter.Void">Void</a></td>
+                <td><a href="#recruiter.CompanyResponse">CompanyResponse</a> stream</td>
+                <td><p>Lists all the registered companies. Returns a stream of companies</p></td>
               </tr>
             
               <tr>
-                <td>ClearStudents</td>
-                <td><a href="#housing.Void">Void</a></td>
-                <td><a href="#housing.Void">Void</a></td>
-                <td><p>Removes all registered students</p></td>
+                <td>ClearCompanies</td>
+                <td><a href="#recruiter.Void">Void</a></td>
+                <td><a href="#recruiter.Void">Void</a></td>
+                <td><p>Removes all registered companies</p></td>
               </tr>
             
           </tbody>
@@ -410,9 +431,9 @@ Returns new student.</p></td>
               
               
               <tr>
-                <td>CreateStudent</td>
+                <td>CreateCompany</td>
                 <td>POST</td>
-                <td>/students/register</td>
+                <td>/register</td>
                 <td>*</td>
               </tr>
               
@@ -420,9 +441,9 @@ Returns new student.</p></td>
               
               
               <tr>
-                <td>ReadStudent</td>
+                <td>ReadCompany</td>
                 <td>GET</td>
-                <td>/students/{id}</td>
+                <td>/{companyCode}</td>
                 <td></td>
               </tr>
               
@@ -430,9 +451,9 @@ Returns new student.</p></td>
               
               
               <tr>
-                <td>UpdateStudent</td>
+                <td>UpdateCompany</td>
                 <td>PUT</td>
-                <td>/students/update/{id}</td>
+                <td>/update/{companyCode}</td>
                 <td>*</td>
               </tr>
               
@@ -440,9 +461,9 @@ Returns new student.</p></td>
               
               
               <tr>
-                <td>DeleteStudent</td>
+                <td>DeleteCompany</td>
                 <td>DELETE</td>
-                <td>/students/delete/{id}</td>
+                <td>/delete/{companyCode}</td>
                 <td></td>
               </tr>
               
@@ -450,9 +471,9 @@ Returns new student.</p></td>
               
               
               <tr>
-                <td>ListStudents</td>
+                <td>ListCompanies</td>
                 <td>GET</td>
-                <td>/students</td>
+                <td>/companies</td>
                 <td></td>
               </tr>
               
@@ -460,9 +481,9 @@ Returns new student.</p></td>
               
               
               <tr>
-                <td>ClearStudents</td>
+                <td>ClearCompanies</td>
                 <td>DELETE</td>
-                <td>/students/clear</td>
+                <td>/clear</td>
                 <td></td>
               </tr>
               
