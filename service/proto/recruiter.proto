@@ -133,7 +133,7 @@ service Recruiter {
     /// Deletes a registration queried by id and returns the deleted student
     rpc DeleteCompany(CompanyRequest) returns (CompanyResponse){
         option (google.api.http) = {
-            delete: "/students/delete/{companyCode}"
+            delete: "/delete/{companyCode}"
         };
 
         option (grpc.gateway.protoc_gen_swagger.options.openapiv2_operation) = {

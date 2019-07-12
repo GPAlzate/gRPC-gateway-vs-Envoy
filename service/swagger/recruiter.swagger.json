@@ -84,53 +84,7 @@
         ]
       }
     },
-    "/register": {
-      "post": {
-        "summary": "Summary: test",
-        "description": "Description Test",
-        "operationId": "CreateCompany",
-        "responses": {
-          "200": {
-            "description": "Overwrites YEET",
-            "schema": {
-              "format": "string"
-            }
-          },
-          "400": {
-            "description": "Returned when the ID does not exist.",
-            "schema": {
-              "format": "string"
-            }
-          },
-          "502": {
-            "description": "Server Error",
-            "schema": {
-              "format": "string"
-            }
-          },
-          "503": {
-            "description": "Bad Gateway",
-            "schema": {
-              "format": "string"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/recruiterCompanyRequest"
-            }
-          }
-        ],
-        "tags": [
-          "Recruiter"
-        ]
-      }
-    },
-    "/students/delete/{companyCode}": {
+    "/delete/{companyCode}": {
       "delete": {
         "summary": "ID has not been registered for housing. Cannot delete",
         "description": "Company with {companyCode} does not exist!",
@@ -200,6 +154,52 @@
             "required": false,
             "type": "boolean",
             "format": "boolean"
+          }
+        ],
+        "tags": [
+          "Recruiter"
+        ]
+      }
+    },
+    "/register": {
+      "post": {
+        "summary": "Summary: test",
+        "description": "Description Test",
+        "operationId": "CreateCompany",
+        "responses": {
+          "200": {
+            "description": "Overwrites YEET",
+            "schema": {
+              "format": "string"
+            }
+          },
+          "400": {
+            "description": "Returned when the ID does not exist.",
+            "schema": {
+              "format": "string"
+            }
+          },
+          "502": {
+            "description": "Server Error",
+            "schema": {
+              "format": "string"
+            }
+          },
+          "503": {
+            "description": "Bad Gateway",
+            "schema": {
+              "format": "string"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/recruiterCompanyRequest"
+            }
           }
         ],
         "tags": [

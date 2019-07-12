@@ -350,7 +350,7 @@ var (
 
 	pattern_Recruiter_UpdateCompany_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 1, 0, 4, 1, 5, 1}, []string{"update", "companyCode"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Recruiter_DeleteCompany_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"students", "delete", "companyCode"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Recruiter_DeleteCompany_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 1, 0, 4, 1, 5, 1}, []string{"delete", "companyCode"}, "", runtime.AssumeColonVerbOpt(true)))
 
 	pattern_Recruiter_ListCompanies_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0}, []string{"companies"}, "", runtime.AssumeColonVerbOpt(true)))
 
