@@ -52,16 +52,17 @@ def ClientDeleteStudent(stub):
     while 1:
         id = int(input(ID_PROMPT))
         request = registration_pb2.StudentRequest(id=id)
-        response = stub.ReadStudent(request)
 
-        #error in read - id doesnt exist, so ask again
-        if not response.ok:
-            print(f"Student with ID {request.id} does not exist!")
+        try:
+            response = stub.ReadStudent(request)
+        except grpc.RpcError as e:
+            status = e.code()
+            print(f"{status.name} error: {e.details()}")
             continue
-
-        choice = input(f"Student\n{response.student}Confirm delete? [y/N] ")
-        if choice == 'y':
-            break
+        else:
+            choice = input(f"Student\n{response.student}Confirm delete? [y/N] ")
+            if choice != 'y':
+                return
 
     response = stub.DeleteStudent(request)
     print(f"\nDeleted\n{response.student}successfully.")

@@ -2,7 +2,54 @@ syntax = "proto3";
 package housing;
 
 import "google/api/annotations.proto";
-import "google/rpc/code.proto";
+import "protoc-gen-swagger/options/annotations.proto";
+
+option (grpc.gateway.protoc_gen_swagger.options.openapiv2_swagger) = {
+	info: {
+		title: "Housing Registration";
+		version: "1.0";
+    };
+    schemes: HTTP;
+    consumes: "application/json";
+    produces: "application/json";
+
+
+    responses: {
+		key: "400";
+		value: {
+			description: "Returned when the ID does not exist.";
+			schema: {
+				json_schema: {
+					type: STRING;
+				}
+			}
+		}
+    }
+
+    responses: {
+        key: "502";
+        value: {
+            description: "Server Error";
+            schema: {
+                json_schema: {
+                    type: STRING;
+                }
+            }
+        }
+    }
+    responses: {
+        key: "503";
+        value: {
+            description: "Bad Gateway";
+            schema: {
+                json_schema: {
+                    type: STRING;
+                }
+            }
+        }
+    }
+
+};
 
 /**
  * Defines the services a client can use to register for housing.
@@ -32,13 +79,48 @@ service Registration {
             post: "/students/register"
             body: "*"
         };
+
+        option (grpc.gateway.protoc_gen_swagger.options.openapiv2_operation) = {
+            description: "Description Test";
+            summary: "Summary: test";
+            responses: {
+                key: "200";
+                value: {
+                    description: "Overwrites YEET";
+                    schema: {
+                        json_schema: {
+                            type: STRING;
+                        }
+                    }
+                }
+            }
+        };
+
     };
 
     /// Reads a student, queried by id number. Returns student with ok response
     rpc ReadStudent(StudentRequest) returns (StudentResponse){
+
         option (google.api.http) = {
             get: "/students/{id}"
         };
+
+        option (grpc.gateway.protoc_gen_swagger.options.openapiv2_operation) = {
+            description: "Student with {id} does not exist!";
+            summary: "ID has not been registered for housing. Cannot delete";
+            responses: {
+                key: "400";
+                value: {
+                    description: "Overwrites default when deleting";
+                    schema: {
+                        json_schema: {
+                            type: STRING;
+                        }
+                    }
+                }
+            }
+        };
+
     };
 
     /// Updates a student's name or dorm. Specified by `changeDorm` boolean.
@@ -54,6 +136,22 @@ service Registration {
     rpc DeleteStudent(StudentRequest) returns (StudentResponse){
         option (google.api.http) = {
             delete: "/students/delete/{id}"
+        };
+
+        option (grpc.gateway.protoc_gen_swagger.options.openapiv2_operation) = {
+            description: "Student with {id} does not exist!";
+            summary: "ID has not been registered for housing. Cannot delete";
+            responses: {
+                key: "400";
+                value: {
+                    description: "Overwrites default when deleting";
+                    schema: {
+                        json_schema: {
+                            type: STRING;
+                        }
+                    }
+                }
+            }
         };
     };
 
@@ -82,13 +180,13 @@ message Void {}
  */
 message Student {
     
-    /** unique id for each student */
+    /* unique id for each student */
     int32 id = 1;
 
-    /** first and last name of a student */
+    /* first and last name of a student */
     string name = 2;
 
-    /** dorm choice */
+    /* dorm choice */
     string dorm = 3;
 }
 
@@ -98,13 +196,13 @@ message Student {
  */
 message StudentRequest {
 
-    /** Unique id student query */
+    /* Unique id student query */
     int32 id = 1;
 
-    /** True if the client requests to change the dorm, false to change name */
+    /* True if the client requests to change the dorm, false to change name */
     bool changeDorm = 2;
 
-    /** The updated value */
+    /* The updated value */
     string new = 3;
 }
 
@@ -120,6 +218,6 @@ message StudentResponse{
      */
     Student student = 1;
 
-    /** True if transaction is successful, false otherwise */
+    /* True if transaction is successful, false otherwise */
     bool ok = 2;
 }

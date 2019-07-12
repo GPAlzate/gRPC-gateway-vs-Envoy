@@ -79,7 +79,10 @@ class RegistrationServicer(registration_pb2_grpc.RegistrationServicer):
         #get from database via helper method
         student = self.GetStudent(request)
 
+        #400 if the requested student doesn't exist
         if not student.id:
+            context.set_details(f"Student with ID {request.id} does not exist!")
+            context.set_code(grpc.StatusCode.INVALID_ARGUMENT)
             return registration_pb2.StudentResponse(student=student, ok=0)
 
         return registration_pb2.StudentResponse(student=student, ok=1)
@@ -107,7 +110,9 @@ class RegistrationServicer(registration_pb2_grpc.RegistrationServicer):
                     self.cur.execute(set_new)
                     response = self.cur.fetchone()
                     if response is None:
-                        student = registration_pb2.Student(id=0, name="ID does not exist!", dorm="ERROR")
+                        context.set_details(f"Student with ID {request.id} does not exist!")
+                        context.set_code(grpc.StatusCode.INVALID_ARGUMENT)
+                        student = registration_pb2.Student(id=0)
                         return registration_pb2.StudentResponse(student=student, ok=0)
 
                     self.db.commit()
@@ -130,14 +135,19 @@ class RegistrationServicer(registration_pb2_grpc.RegistrationServicer):
 
         '''
         try:
+
             with _lock:
                 #delete and return
                 self.cur.execute(f"DELETE FROM student WHERE id={request.id} "
                                 "RETURNING *")
                 response = self.cur.fetchone()
+
+                #400 response
                 if response is None:
-                    student = registration_pb2.Student(id=0, name="ID does not exist!", dorm="ERROR")
-                    return registration_pb2.StudentResponse(student=student, ok=0)
+                    context.set_details(f"Student with ID {request.id} does not exist!!")
+                    context.set_code(grpc.StatusCode.UNKNOWN)
+                    badstudent = registration_pb2.Student()
+                    return registration_pb2.StudentResponse(student=badstudent, ok=0)
 
                 self.db.commit()
                 student = registration_pb2.Student(id=response[0], name=response[1],
@@ -182,7 +192,7 @@ class RegistrationServicer(registration_pb2_grpc.RegistrationServicer):
                 self.cur.execute(f"SELECT * FROM student WHERE id={request.id}")
                 entry = self.cur.fetchone()
                 if entry is None:
-                    return registration_pb2.Student(id=0, name="ERROR", dorm="ERROR")
+                    return registration_pb2.Student(id=0)
                 return registration_pb2.Student(id=entry[0], name=entry[1], dorm=entry[2])
         except Exception as e:
             print(str(e))

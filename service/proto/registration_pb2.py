@@ -14,17 +14,17 @@ _sym_db = _symbol_database.Default()
 
 
 from google.api import annotations_pb2 as google_dot_api_dot_annotations__pb2
-from google.rpc import code_pb2 as google_dot_rpc_dot_code__pb2
+from protoc_gen_swagger.options import annotations_pb2 as protoc__gen__swagger_dot_options_dot_annotations__pb2
 
 
 DESCRIPTOR = _descriptor.FileDescriptor(
   name='proto/registration.proto',
   package='housing',
   syntax='proto3',
-  serialized_options=None,
-  serialized_pb=_b('\n\x18proto/registration.proto\x12\x07housing\x1a\x1cgoogle/api/annotations.proto\x1a\x15google/rpc/code.proto\"\x06\n\x04Void\"1\n\x07Student\x12\n\n\x02id\x18\x01 \x01(\x05\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\x0c\n\x04\x64orm\x18\x03 \x01(\t\"=\n\x0eStudentRequest\x12\n\n\x02id\x18\x01 \x01(\x05\x12\x12\n\nchangeDorm\x18\x02 \x01(\x08\x12\x0b\n\x03new\x18\x03 \x01(\t\"@\n\x0fStudentResponse\x12!\n\x07student\x18\x01 \x01(\x0b\x32\x10.housing.Student\x12\n\n\x02ok\x18\x02 \x01(\x08\x32\xa3\x04\n\x0cRegistration\x12Z\n\rCreateStudent\x12\x10.housing.Student\x1a\x18.housing.StudentResponse\"\x1d\x82\xd3\xe4\x93\x02\x17\"\x12/students/register:\x01*\x12X\n\x0bReadStudent\x12\x17.housing.StudentRequest\x1a\x18.housing.StudentResponse\"\x16\x82\xd3\xe4\x93\x02\x10\x12\x0e/students/{id}\x12\x64\n\rUpdateStudent\x12\x17.housing.StudentRequest\x1a\x18.housing.StudentResponse\" \x82\xd3\xe4\x93\x02\x1a\x1a\x15/students/update/{id}:\x01*\x12\x61\n\rDeleteStudent\x12\x17.housing.StudentRequest\x1a\x18.housing.StudentResponse\"\x1d\x82\xd3\xe4\x93\x02\x17*\x15/students/delete/{id}\x12L\n\x0cListStudents\x12\r.housing.Void\x1a\x18.housing.StudentResponse\"\x11\x82\xd3\xe4\x93\x02\x0b\x12\t/students0\x01\x12\x46\n\rClearStudents\x12\r.housing.Void\x1a\r.housing.Void\"\x17\x82\xd3\xe4\x93\x02\x11*\x0f/students/clearb\x06proto3')
+  serialized_options=_b('\222A\270\001\022\033\n\024Housing Registration2\0031.0*\001\0012\020application/json:\020application/jsonR5\n\003400\022.\n$Returned when the ID does not exist.\022\006\n\004\232\002\001\007R\035\n\003502\022\026\n\014Server Error\022\006\n\004\232\002\001\007R\034\n\003503\022\025\n\013Bad Gateway\022\006\n\004\232\002\001\007'),
+  serialized_pb=_b('\n\x18proto/registration.proto\x12\x07housing\x1a\x1cgoogle/api/annotations.proto\x1a,protoc-gen-swagger/options/annotations.proto\"\x06\n\x04Void\"1\n\x07Student\x12\n\n\x02id\x18\x01 \x01(\x05\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\x0c\n\x04\x64orm\x18\x03 \x01(\t\"=\n\x0eStudentRequest\x12\n\n\x02id\x18\x01 \x01(\x05\x12\x12\n\nchangeDorm\x18\x02 \x01(\x08\x12\x0b\n\x03new\x18\x03 \x01(\t\"@\n\x0fStudentResponse\x12!\n\x07student\x18\x01 \x01(\x0b\x32\x10.housing.Student\x12\n\n\x02ok\x18\x02 \x01(\x08\x32\xbd\x06\n\x0cRegistration\x12\xa0\x01\n\rCreateStudent\x12\x10.housing.Student\x1a\x18.housing.StudentResponse\"c\x82\xd3\xe4\x93\x02\x17\"\x12/students/register:\x01*\x92\x41\x43\x12\rSummary: test\x1a\x10\x44\x65scription TestJ \n\x03\x32\x30\x30\x12\x19\n\x0fOverwrites YEET\x12\x06\n\x04\x9a\x02\x01\x07\x12\xb6\x01\n\x0bReadStudent\x12\x17.housing.StudentRequest\x1a\x18.housing.StudentResponse\"t\x82\xd3\xe4\x93\x02\x10\x12\x0e/students/{id}\x92\x41[\x12\rSummary: test\x1a\x18\x44\x65scription Test for GETJ0\n\x03\x32\x30\x30\x12)\n\x1fOverwrites default when reading\x12\x06\n\x04\x9a\x02\x01\x07\x12\x64\n\rUpdateStudent\x12\x17.housing.StudentRequest\x1a\x18.housing.StudentResponse\" \x82\xd3\xe4\x93\x02\x1a\x1a\x15/students/update/{id}:\x01*\x12\xd4\x01\n\rDeleteStudent\x12\x17.housing.StudentRequest\x1a\x18.housing.StudentResponse\"\x8f\x01\x82\xd3\xe4\x93\x02\x17*\x15/students/delete/{id}\x92\x41o\x12&ID has not been registered for housing\x1a\x12ID does not exist!J1\n\x03\x34\x30\x30\x12*\n Overwrites default when deleting\x12\x06\n\x04\x9a\x02\x01\x07\x12L\n\x0cListStudents\x12\r.housing.Void\x1a\x18.housing.StudentResponse\"\x11\x82\xd3\xe4\x93\x02\x0b\x12\t/students0\x01\x12\x46\n\rClearStudents\x12\r.housing.Void\x1a\r.housing.Void\"\x17\x82\xd3\xe4\x93\x02\x11*\x0f/students/clearB\xbc\x01\x92\x41\xb8\x01\x12\x1b\n\x14Housing Registration2\x03\x31.0*\x01\x01\x32\x10\x61pplication/json:\x10\x61pplication/jsonR5\n\x03\x34\x30\x30\x12.\n$Returned when the ID does not exist.\x12\x06\n\x04\x9a\x02\x01\x07R\x1d\n\x03\x35\x30\x32\x12\x16\n\x0cServer Error\x12\x06\n\x04\x9a\x02\x01\x07R\x1c\n\x03\x35\x30\x33\x12\x15\n\x0b\x42\x61\x64 Gateway\x12\x06\n\x04\x9a\x02\x01\x07\x62\x06proto3')
   ,
-  dependencies=[google_dot_api_dot_annotations__pb2.DESCRIPTOR,google_dot_rpc_dot_code__pb2.DESCRIPTOR,])
+  dependencies=[google_dot_api_dot_annotations__pb2.DESCRIPTOR,protoc__gen__swagger_dot_options_dot_annotations__pb2.DESCRIPTOR,])
 
 
 
@@ -48,8 +48,8 @@ _VOID = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=90,
-  serialized_end=96,
+  serialized_start=113,
+  serialized_end=119,
 )
 
 
@@ -93,8 +93,8 @@ _STUDENT = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=98,
-  serialized_end=147,
+  serialized_start=121,
+  serialized_end=170,
 )
 
 
@@ -138,8 +138,8 @@ _STUDENTREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=149,
-  serialized_end=210,
+  serialized_start=172,
+  serialized_end=233,
 )
 
 
@@ -176,8 +176,8 @@ _STUDENTRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=212,
-  serialized_end=276,
+  serialized_start=235,
+  serialized_end=299,
 )
 
 _STUDENTRESPONSE.fields_by_name['student'].message_type = _STUDENT
@@ -216,6 +216,7 @@ StudentResponse = _reflection.GeneratedProtocolMessageType('StudentResponse', (_
 _sym_db.RegisterMessage(StudentResponse)
 
 
+DESCRIPTOR._options = None
 
 _REGISTRATION = _descriptor.ServiceDescriptor(
   name='Registration',
@@ -223,8 +224,8 @@ _REGISTRATION = _descriptor.ServiceDescriptor(
   file=DESCRIPTOR,
   index=0,
   serialized_options=None,
-  serialized_start=279,
-  serialized_end=826,
+  serialized_start=302,
+  serialized_end=1131,
   methods=[
   _descriptor.MethodDescriptor(
     name='CreateStudent',
@@ -233,7 +234,7 @@ _REGISTRATION = _descriptor.ServiceDescriptor(
     containing_service=None,
     input_type=_STUDENT,
     output_type=_STUDENTRESPONSE,
-    serialized_options=_b('\202\323\344\223\002\027\"\022/students/register:\001*'),
+    serialized_options=_b('\202\323\344\223\002\027\"\022/students/register:\001*\222AC\022\rSummary: test\032\020Description TestJ \n\003200\022\031\n\017Overwrites YEET\022\006\n\004\232\002\001\007'),
   ),
   _descriptor.MethodDescriptor(
     name='ReadStudent',
@@ -242,7 +243,7 @@ _REGISTRATION = _descriptor.ServiceDescriptor(
     containing_service=None,
     input_type=_STUDENTREQUEST,
     output_type=_STUDENTRESPONSE,
-    serialized_options=_b('\202\323\344\223\002\020\022\016/students/{id}'),
+    serialized_options=_b('\202\323\344\223\002\020\022\016/students/{id}\222A[\022\rSummary: test\032\030Description Test for GETJ0\n\003200\022)\n\037Overwrites default when reading\022\006\n\004\232\002\001\007'),
   ),
   _descriptor.MethodDescriptor(
     name='UpdateStudent',
@@ -260,7 +261,7 @@ _REGISTRATION = _descriptor.ServiceDescriptor(
     containing_service=None,
     input_type=_STUDENTREQUEST,
     output_type=_STUDENTRESPONSE,
-    serialized_options=_b('\202\323\344\223\002\027*\025/students/delete/{id}'),
+    serialized_options=_b('\202\323\344\223\002\027*\025/students/delete/{id}\222Ao\022&ID has not been registered for housing\032\022ID does not exist!J1\n\003400\022*\n Overwrites default when deleting\022\006\n\004\232\002\001\007'),
   ),
   _descriptor.MethodDescriptor(
     name='ListStudents',
