@@ -168,7 +168,7 @@ class RecruiterServicer(recruiter_pb2_grpc.RecruiterServicer):
             No client app for this; clears the entire database of companies. For
             testing purposes only
         """
-        self.cur.execute("TRUNCATE company")
+        self.cur.execute("TRUNCATE companies")
         self.db.commit()
         return recruiter_pb2.Void()
 
