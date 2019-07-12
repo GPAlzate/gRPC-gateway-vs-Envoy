@@ -120,7 +120,7 @@ RPC Methods:
 
 | Method Name | Request Type | Response Type | Description |
 | ----------- | ------------ | ------------- | ------------|
-| CreateCompany | [CompanyRequest](#recruiter.CompanyRequest) | [CompanyResponse](#recruiter.CompanyResponse) | Creates a company from a company message. Returns created company with ok response |
+| CreateCompany | [Company](#recruiter.Company) | [CompanyResponse](#recruiter.CompanyResponse) | Creates a company from a company message. Returns created company with ok response |
 | ReadCompany | [CompanyRequest](#recruiter.CompanyRequest) | [CompanyResponse](#recruiter.CompanyResponse) | Reads a company, queried by company code. Returns company with ok response |
 | UpdateCompany | [CompanyRequest](#recruiter.CompanyRequest) | [CompanyResponse](#recruiter.CompanyResponse) | Updates a student&#39;s name or dorm. Specified by `changeDorm` boolean. Returns new student. |
 | DeleteCompany | [CompanyRequest](#recruiter.CompanyRequest) | [CompanyResponse](#recruiter.CompanyResponse) | Deletes a registration queried by id and returns the deleted student |

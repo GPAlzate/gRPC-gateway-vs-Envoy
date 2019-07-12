@@ -73,7 +73,7 @@ service Recruiter {
 
     /// Creates a company from a company message. Returns created company with
     // ok response
-    rpc CreateCompany(CompanyRequest) returns (CompanyResponse){
+    rpc CreateCompany(Company) returns (CompanyResponse){
         option (google.api.http) = {
             post: "/register"
             body: "*"

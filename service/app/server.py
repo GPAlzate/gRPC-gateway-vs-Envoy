@@ -59,7 +59,7 @@ class RecruiterServicer(recruiter_pb2_grpc.RecruiterServicer):
             ops = request.numOpenings
             brok = request.isBrokerage
 
-            company = recruiter_pb2.CompanyRequest(companyCode = code,
+            company = recruiter_pb2.Company(companyCode = code,
                     companyName = name, numOpenings = ops, isBrokerage = brok)
 
             #insert new company in a thread safe manner
@@ -117,19 +117,19 @@ class RecruiterServicer(recruiter_pb2_grpc.RecruiterServicer):
             with _lock:
                 self.cur.execute(set_new)
                 response = self.cur.fetchone()
-                return SubmitResponse(code, response, context)
+                return self.SubmitResponse(code, response, context)
         except Exception as e:
             print(str(e))
 
     def DeleteCompany(self, request, context):
         try:
-            code = request.company.companyCode
+            code = request.companyCode
             with _lock:
                 #delete and return
-                self.cur.execute(f"DELETE FROM company "
+                self.cur.execute(f"DELETE FROM companies "
                                 f"WHERE companyCode={code} RETURNING *")
                 response = self.cur.fetchone()
-                return SubmitResponse(code, response, context)
+                return self.SubmitResponse(code, response, context)
         except Exception as e:
             print(str(e))
 
@@ -152,7 +152,7 @@ class RecruiterServicer(recruiter_pb2_grpc.RecruiterServicer):
         try:
             with _lock:
                 self.cur.execute(f"SELECT * FROM companies WHERE " 
-                                    "companyCode={request.companyCode}")
+                                    f"companyCode={request.companyCode}")
                 entry = self.cur.fetchone()
 
                 #returns with company code 0 by default

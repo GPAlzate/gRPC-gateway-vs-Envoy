@@ -198,7 +198,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/recruiterCompanyRequest"
+              "$ref": "#/definitions/recruiterCompany"
             }
           }
         ],

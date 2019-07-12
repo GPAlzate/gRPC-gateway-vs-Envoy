@@ -33,7 +33,7 @@ class RecruiterStub(object):
     """
     self.CreateCompany = channel.unary_unary(
         '/recruiter.Recruiter/CreateCompany',
-        request_serializer=proto_dot_recruiter__pb2.CompanyRequest.SerializeToString,
+        request_serializer=proto_dot_recruiter__pb2.Company.SerializeToString,
         response_deserializer=proto_dot_recruiter__pb2.CompanyResponse.FromString,
         )
     self.ReadCompany = channel.unary_unary(
@@ -133,7 +133,7 @@ def add_RecruiterServicer_to_server(servicer, server):
   rpc_method_handlers = {
       'CreateCompany': grpc.unary_unary_rpc_method_handler(
           servicer.CreateCompany,
-          request_deserializer=proto_dot_recruiter__pb2.CompanyRequest.FromString,
+          request_deserializer=proto_dot_recruiter__pb2.Company.FromString,
           response_serializer=proto_dot_recruiter__pb2.CompanyResponse.SerializeToString,
       ),
       'ReadCompany': grpc.unary_unary_rpc_method_handler(
