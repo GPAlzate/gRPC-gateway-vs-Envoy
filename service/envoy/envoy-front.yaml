@@ -32,8 +32,8 @@ static_resources:
               - name: envoy.grpc_http1_bridge
               - name: envoy.grpc_json_transcoder
                 config:
-                    proto_descriptor: "/proto/registration.pb"
-                    services: ["housing.Registration"]
+                    proto_descriptor: "/proto/recruiter.pb"
+                    services: ["recruiter.Recruiter"]
               - name: envoy.router
     clusters:
       - name: app

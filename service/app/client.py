@@ -2,22 +2,27 @@ import grpc
 import random, logging
 from proto import recruiter_pb2, recruiter_pb2_grpc
 
-ID_PROMPT = "\nEnter your id (8-digit number): "
-NAME_PROMPT = "Enter your name (first and last): "
-DORM_PROMPT = "\nEnter a dorm: "
+NAME_PROMPT = "\nEnter your company name: "
+OPEN_PROMPT = "\nHow many job openings do you have?  "
+BROK_PROMPT = "\nAre you a brokerage? [y/n] "
 
-def ClientCreateStudent(stub):
+
+def ClientCreateCompany(stub):
+    code = random.randint(10000000,99999999)
     name = "'" + input(NAME_PROMPT) + "'"
-    id = int(input(ID_PROMPT))
-    dorm = "'" + input(DORM_PROMPT) + "'"
+    open = int(input(OPEN_PROMPT))
+    brok = False
+    if input(BROK_PROMPT) == 'y':
+        brok = True
 
-    request = registration_pb2.Student(name = name, id = id, dorm = dorm)
+    request = recruiter_pb2.CompanyRequest(companyCode=code, companyName=name,
+                                    numOpenings=open, isBrokerage=brok)
     response = stub.CreateStudent(request)
 
     if not response.ok:
-        print("ID already in use! Please re-enter your ID\n")
+        print("Company already exists! Please re-enter your company name\n")
     else:
-        print(f"\nCreated\n{response.student}successfully.")
+        print(f"\nCreated\n{response.company}successfully.")
 
 
 def ClientUpdateStudent(stub):
@@ -78,12 +83,12 @@ def ClientListStudents(stub):
 
 def run():
     with grpc.insecure_channel('localhost:50051') as channel:
-        stub = registration_pb2_grpc.RegistrationStub(channel)
+        stub = recruiter_pb2_grpc.RecruiterStub(channel)
 
         while 1:
             while 1:
                 try:
-                    print("\n1) Assign a Student\n"
+                    print("\n1) Create a Company\n"
                             "2) List Housing Assignments\n"
                             "3) Edit Student Assignment\n"
                             "4) Delete Student Assignment")
@@ -94,8 +99,8 @@ def run():
                     break
 
             if choice == 1:
-                print("\n---Assign a Student---")
-                ClientCreateStudent(stub)
+                print("\n---Create a Company---")
+                ClientCreateCompany(stub)
             elif choice == 2:
                 print("\n---List Housing Assignments---\n")
                 ClientListStudents(stub)

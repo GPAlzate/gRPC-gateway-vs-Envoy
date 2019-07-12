@@ -31,7 +31,7 @@ def create_db():
         print("Database connection failure: Quitting...")
         return None
 
-class RegistrationServicer(recruiter_pb2_grpc.RegistrationServicer): 
+class RecruiterServicer(recruiter_pb2_grpc.RecruiterServicer): 
 
     def __init__(self):
         self.db = create_db()
@@ -43,7 +43,7 @@ class RegistrationServicer(recruiter_pb2_grpc.RegistrationServicer):
         self.cur.execute("CREATE TABLE IF NOT EXISTS companies("
                         "companyCode INT PRIMARY KEY,"
                         "companyName VARCHAR (255) NOT NULL,"
-                        "numOpenings INT (15) NOT NULL CHECK(numOpenings > 0),"
+                        "numOpenings INT NOT NULL CHECK(numOpenings > 0),"
                         "isBrokerage BOOLEAN NOT NULL"
                         ")")
 
@@ -59,9 +59,8 @@ class RegistrationServicer(recruiter_pb2_grpc.RegistrationServicer):
             ops = request.numOpenings
             brok = request.isBrokerage
 
-            company = recruiter_pb2.Company(companyCode = code, companyName = name,
-                                            numOpenings = ops, isBrokerage = brok)
-            request = recruiter_pb2.CompanyRequest(company = company, ok = 1)
+            company = recruiter_pb2.CompanyRequest(companyCode = code,
+                    companyName = name, numOpenings = ops, isBrokerage = brok)
 
             #insert new company in a thread safe manner
             with _lock:
@@ -189,8 +188,8 @@ class RegistrationServicer(recruiter_pb2_grpc.RegistrationServicer):
 
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
-    recruiter_pb2_grpc.add_RegistrationServicer_to_server(
-            RegistrationServicer(), server)
+    recruiter_pb2_grpc.add_RecruiterServicer_to_server(
+            RecruiterServicer(), server)
     server.add_insecure_port('[::]:50051')
     server.start()
     try:
