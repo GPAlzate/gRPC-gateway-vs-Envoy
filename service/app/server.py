@@ -109,10 +109,10 @@ class RecruiterServicer(recruiter_pb2_grpc.RecruiterServicer):
                 setNewFields += f"companyName={name},"
             if ops:
                 setNewFields += f"numOpenings={ops},"
-            if brok:
+            if brok is not None:
                 setNewFields += f"isBrokerage={brok}"
 
-            set_new = f"UPDATE company {setNewFields.rstrip(',')} WHERE companyCode={code} RETURNING *"
+            set_new = f"UPDATE companies {setNewFields.rstrip(',')} WHERE companyCode={code} RETURNING *"
 
             with _lock:
                 self.cur.execute(set_new)

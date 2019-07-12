@@ -1,5 +1,5 @@
 import grpc
-import random, logging
+import random, logging, string
 from proto import recruiter_pb2, recruiter_pb2_grpc
 
 CODE_PROMPT = "\nEnter your provided company code: "
@@ -7,17 +7,17 @@ NAME_PROMPT = "\nEnter your company name: "
 OPEN_PROMPT = "\nHow many job openings do you have?  "
 BROK_PROMPT = "\nAre you a brokerage? [y/n] "
 
-
+_CHARS = string.ascii_letters
 def ClientCreateCompany(stub):
     code = random.randint(10000000,99999999)
     name = "'" + input(NAME_PROMPT) + "'"
-    open = int(input(OPEN_PROMPT))
+    ops = int(input(OPEN_PROMPT))
     brok = False
     if input(BROK_PROMPT) == 'y':
         brok = True
 
     request = recruiter_pb2.Company(companyCode=code, companyName=name,
-                                    numOpenings=open, isBrokerage=brok)
+                                    numOpenings=ops, isBrokerage=brok)
     response = stub.CreateCompany(request)
 
     if not response.ok:
@@ -29,7 +29,6 @@ def ClientCreateCompany(stub):
 def ClientUpdateCompany(stub):
     """
         BIG TODO: fix architecture of this thing
-    """
 
     code = int(input(CODE_PROMPT))
     request = recruiter_pb2.CompanyRequest(companyCode=code)
@@ -53,7 +52,17 @@ def ClientUpdateCompany(stub):
     response = stub.UpdateStudent(request=request)
 
     print(f"{response}\nUpdated successfully")
+    """
 
+    code = 10357854
+    name = "'" + ''.join(random.sample(_CHARS, 12)) + "'"
+    ops = random.randint(1, 99)
+    brok = None
+
+    request = recruiter_pb2.CompanyRequest(companyCode=code, companyName=name,
+                                    numOpenings=ops, isBrokerage=brok)
+    response = stub.UpdateCompany(request)
+    print(f"{response.company}\nUpdated successfully")
 
 def ClientDeleteCompany(stub):
     #keep asking for student id number to search for student to delete
