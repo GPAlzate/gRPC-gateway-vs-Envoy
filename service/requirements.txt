@@ -3,3 +3,4 @@ grpcio
 grpcio-tools
 googleapis-common-protos
 protoc-gen-swagger
+graphene
