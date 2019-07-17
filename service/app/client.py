@@ -103,30 +103,30 @@ def run():
         stub = recruiter_pb2_grpc.RecruiterStub(channel)
 
         while 1:
-            while 1:
-                try:
-                    print("\n1) Create a Company\n"
-                            "2) List Registered Companies\n"
-                            "3) Edit Company\n"
-                            "4) Delete Company")
-                    choice = int(input("What would you like to do? [1 - 4]: "))
-                except ValueError:
-                    print("That is not a number. Please try again.")
-                else:
-                    break
-
-            if choice == 1:
-                print("\n---Create a Company---")
-                ClientCreateCompany(stub)
-            elif choice == 2:
-                print("\n---List Registered Companies---\n")
-                ClientListCompanies(stub)
-            elif choice == 3:
-                print("\n---Edit Company---")
-                ClientUpdateCompany(stub)
+            try:
+                print("\n1) Create a Company\n"
+                        "2) List Registered Companies\n"
+                        "3) Edit Company\n"
+                        "4) Delete Company")
+                choice = int(input("What would you like to do? [1 - 4]: "))
+            except ValueError:
+                print("That is not a number. Please try again.")
+                continue
             else:
-                print("\n---Delete Company---")
-                ClientDeleteCompany(stub)
+                continue
+
+        if choice == 1:
+            print("\n---Create a Company---")
+            ClientCreateCompany(stub)
+        elif choice == 2:
+            print("\n---List Registered Companies---\n")
+            ClientListCompanies(stub)
+        elif choice == 3:
+            print("\n---Edit Company---")
+            ClientUpdateCompany(stub)
+        else:
+            print("\n---Delete Company---")
+            ClientDeleteCompany(stub)
 
 if __name__ == '__main__':
     run()
