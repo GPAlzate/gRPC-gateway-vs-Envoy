@@ -28,15 +28,20 @@ def ClientCreateCompany(stub):
 
 def ClientUpdateCompany(stub):
 
-    code = int(input(CODE_PROMPT))
-    request = recruiter_pb2.CompanyRequest(companyCode=code)
-    response = stub.ReadCompany(request)
-    if not response.ok:
-        print(f"Company with code {request.companyCode} does not exist!")
-        return
+    while 1:
+        code = int(input(CODE_PROMPT))
+        request = recruiter_pb2.CompanyRequest(companyCode=code)
+        try:
+            response = stub.ReadCompany(request)
+        except grpc.RpcError as e:
+            status = e.code()
+            print(f"{status.name} error: {e.details()}")
+            continue
+        else:
+            break
 
     comp = response.company
-    print(f"{comp}")
+    print(comp)
 
     if input("Would you like to update the company name? [y/N] ") == 'y':
         request.companyName = f"'{input('NAME UPDATE: ' + NAME_PROMPT)}'"
@@ -112,21 +117,19 @@ def run():
             except ValueError:
                 print("That is not a number. Please try again.")
                 continue
-            else:
-                continue
 
-        if choice == 1:
-            print("\n---Create a Company---")
-            ClientCreateCompany(stub)
-        elif choice == 2:
-            print("\n---List Registered Companies---\n")
-            ClientListCompanies(stub)
-        elif choice == 3:
-            print("\n---Edit Company---")
-            ClientUpdateCompany(stub)
-        else:
-            print("\n---Delete Company---")
-            ClientDeleteCompany(stub)
+            if choice == 1:
+                print("\n---Create a Company---")
+                ClientCreateCompany(stub)
+            elif choice == 2:
+                print("\n---List Registered Companies---\n")
+                ClientListCompanies(stub)
+            elif choice == 3:
+                print("\n---Edit Company---")
+                ClientUpdateCompany(stub)
+            else:
+                print("\n---Delete Company---")
+                ClientDeleteCompany(stub)
 
 if __name__ == '__main__':
     run()

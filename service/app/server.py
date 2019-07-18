@@ -67,10 +67,12 @@ class RecruiterServicer(recruiter_pb2_grpc.RecruiterServicer):
                 try:
                     self.cur.execute("INSERT INTO companies (companyCode, companyName, "
                                         "numOpenings, isBrokerage) "
-                                        f"VALUES ({code}, {name}, {ops}, {brok})")
+                                        f"VALUES ({code}, {name}, {ops}, {brok});")
                 except psycopg2.IntegrityError:
                     self.db.rollback()
-                    return recruiter_pb2.CompanyResponse(company=company)
+                    context.set_details(f"Code {code} already in use!")
+                    context.set_code(grpc.StatusCode.INVALID_ARGUMENT)
+                    return recruiter_pb2.CompanyResponse(company=company, ok=0)
                 else:
                     self.db.commit()
                     return recruiter_pb2.CompanyResponse(company=company, ok=1)
@@ -84,6 +86,7 @@ class RecruiterServicer(recruiter_pb2_grpc.RecruiterServicer):
         """
         #get from database via helper method
         company = self.GetCompany(request)
+        print(company.companyCode)
 
         #400 if the requested company doesn't exist
         if not company.companyCode:
@@ -127,7 +130,7 @@ class RecruiterServicer(recruiter_pb2_grpc.RecruiterServicer):
             with _lock:
                 #delete and return
                 self.cur.execute(f"DELETE FROM companies "
-                                f"WHERE companyCode={code} RETURNING *")
+                                f"WHERE companyCode={code} RETURNING *;")
                 response = self.cur.fetchone()
                 return self.SubmitResponse(code, response, context)
         except Exception as e:
@@ -136,7 +139,7 @@ class RecruiterServicer(recruiter_pb2_grpc.RecruiterServicer):
     def ListCompanies(self, request, context):
         try:
             with _lock:
-                self.cur.execute("SELECT * FROM companies")
+                self.cur.execute("SELECT * FROM companies;")
                 rows = self.cur.fetchall()
                 for row in rows:
                     company = recruiter_pb2.Company(companyCode=row[0], companyName=row[1],
@@ -152,7 +155,7 @@ class RecruiterServicer(recruiter_pb2_grpc.RecruiterServicer):
         try:
             with _lock:
                 self.cur.execute(f"SELECT * FROM companies WHERE " 
-                                    f"companyCode={request.companyCode}")
+                                    f"companyCode={request.companyCode};")
                 entry = self.cur.fetchone()
 
                 #returns with company code 0 by default
