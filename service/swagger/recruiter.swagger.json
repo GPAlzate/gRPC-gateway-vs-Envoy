@@ -84,6 +84,83 @@
         ]
       }
     },
+    "/companies/{companyCode}": {
+      "get": {
+        "summary": "Company is not in the database. Cannot delete",
+        "description": "Company with {companyCode} does not exist!",
+        "operationId": "ReadCompany",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/recruiterCompanyResponse"
+            }
+          },
+          "400": {
+            "description": "Overwrites default when deleting",
+            "schema": {
+              "format": "string"
+            }
+          },
+          "502": {
+            "description": "Server Error",
+            "schema": {
+              "format": "string"
+            }
+          },
+          "503": {
+            "description": "Bad Gateway",
+            "schema": {
+              "format": "string"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "companyCode",
+            "description": "unique id for each company",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "companyName",
+            "description": "name of the company.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "numOpenings",
+            "description": "how many jobs are available.",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "isBrokerage",
+            "description": "determines if the company is brokerage.",
+            "in": "query",
+            "required": false,
+            "type": "boolean",
+            "format": "boolean"
+          },
+          {
+            "name": "ok",
+            "description": "True if transaction is successful, false otherwise.",
+            "in": "query",
+            "required": false,
+            "type": "boolean",
+            "format": "boolean"
+          }
+        ],
+        "tags": [
+          "Recruiter"
+        ]
+      }
+    },
     "/delete/{companyCode}": {
       "delete": {
         "summary": "ID has not been registered for housing. Cannot delete",
@@ -253,83 +330,6 @@
             "schema": {
               "$ref": "#/definitions/recruiterCompanyRequest"
             }
-          }
-        ],
-        "tags": [
-          "Recruiter"
-        ]
-      }
-    },
-    "/{companyCode}": {
-      "get": {
-        "summary": "Company is not in the database. Cannot delete",
-        "description": "Company with {companyCode} does not exist!",
-        "operationId": "ReadCompany",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/recruiterCompanyResponse"
-            }
-          },
-          "400": {
-            "description": "Overwrites default when deleting",
-            "schema": {
-              "format": "string"
-            }
-          },
-          "502": {
-            "description": "Server Error",
-            "schema": {
-              "format": "string"
-            }
-          },
-          "503": {
-            "description": "Bad Gateway",
-            "schema": {
-              "format": "string"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "companyCode",
-            "description": "unique id for each company",
-            "in": "path",
-            "required": true,
-            "type": "integer",
-            "format": "int32"
-          },
-          {
-            "name": "companyName",
-            "description": "name of the company.",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "numOpenings",
-            "description": "how many jobs are available.",
-            "in": "query",
-            "required": false,
-            "type": "integer",
-            "format": "int32"
-          },
-          {
-            "name": "isBrokerage",
-            "description": "determines if the company is brokerage.",
-            "in": "query",
-            "required": false,
-            "type": "boolean",
-            "format": "boolean"
-          },
-          {
-            "name": "ok",
-            "description": "True if transaction is successful, false otherwise.",
-            "in": "query",
-            "required": false,
-            "type": "boolean",
-            "format": "boolean"
           }
         ],
         "tags": [
