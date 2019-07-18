@@ -346,7 +346,7 @@ func RegisterRecruiterHandlerClient(ctx context.Context, mux *runtime.ServeMux, 
 var (
 	pattern_Recruiter_CreateCompany_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0}, []string{"register"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Recruiter_ReadCompany_0 = runtime.MustPattern(runtime.NewPattern(1, []int{1, 0, 4, 1, 5, 0}, []string{"companyCode"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Recruiter_ReadCompany_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 1, 0, 4, 1, 5, 1}, []string{"companies", "companyCode"}, "", runtime.AssumeColonVerbOpt(true)))
 
 	pattern_Recruiter_UpdateCompany_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 1, 0, 4, 1, 5, 1}, []string{"update", "companyCode"}, "", runtime.AssumeColonVerbOpt(true)))
 
