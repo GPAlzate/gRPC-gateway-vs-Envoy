@@ -89,8 +89,8 @@ source ~/.profile
 ```
 
 #### To-do list:
-[] Learn how running Go files works so that I can Dockerize the Go server(s)
-[] Run tests to determine the best proxy server system
+- [ ] Learn how running Go files works so that I can Dockerize the Go server(s)
+- [ ] Run tests to determine the best proxy server system
 
 ## Author
 
