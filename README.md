@@ -6,7 +6,7 @@
 
 ## Usage
 
-Usage commands will take place in the `gRPC-gateway-vs-Envoy/services` directory. Make sure you have Python 3 installed. To run the gRPC client app, install the necessary packages in the `requirements.txt` file:
+Usage commands will take place in the `gRPC-gateway-vs-Envoy/service` directory. Make sure you have Python 3 installed. To run the gRPC client app, install the necessary packages in the `requirements.txt` file:
 
 ```sh
 pip3 install -r requirements.txt
@@ -14,7 +14,7 @@ pip3 install -r requirements.txt
 
 Note: psycopg2 isn't required for the client app but it is for the server app. You can refrain from downloading this if you want, and simply run `pip3 install` on the other packages specified in the `requirements.txt` file manually.
 
-Also make sure you [Docker](https://www.docker.com/) installed. All other tools (PostgreSQL, Nginx) are used by pulling pre-built Docker images. Just run the following command in in the `gRPC-gateway-vs-Envoy/services` directory:
+Also make sure you [Docker](https://www.docker.com/) installed. All other tools (PostgreSQL, Nginx) are used by pulling pre-built Docker images. Just run the following command in in the `gRPC-gateway-vs-Envoy/service` directory:
 
 ```sh
 docker-compose up --build -d
@@ -26,7 +26,7 @@ There are two ways to run the demo app as a client.
 
 #### 1) gRPC + Protocol Buffers over HTTP/2.0
 
-Navigate to the `gRPC-gateway-vs-Envoy/services` directory and run:
+Navigate to the `gRPC-gateway-vs-Envoy/service` directory and run:
 
 ```sh
 python3 -m app.client
