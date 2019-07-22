@@ -31,7 +31,6 @@ swagger: $(PROTO)
 	rmdir ../swagger/proto;
 
 docs:
-	protoc $(GRPC_FLAGS) --doc_out=../.. --doc_opt=markdown,README.md ../proto/recruiter.proto; 
 	protoc $(GRPC_FLAGS) --doc_out=../.. --doc_opt=html,index.html ../proto/recruiter.proto;
 
 clean:

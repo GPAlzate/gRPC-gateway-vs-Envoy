@@ -6,7 +6,13 @@
 
 ## Usage
 
-Make sure you have Python 3 and [Docker](https://www.docker.com/) installed. All other tools (PostgreSQL, Nginx) are used by pulling pre-built Docker images. Just run the following command in in the `gRPC-gateway-vs-Envoy/services` directory:
+Usage commands will take place in the `gRPC-gateway-vs-Envoy/services` directory. Make sure you have Python 3 installed. To run the gRPC client app, install the necessary packages in the `requirements.txt` file:
+
+```sh
+pip3 install -r requirements.txt
+```
+
+Also make sure you [Docker](https://www.docker.com/) installed. All other tools (PostgreSQL, Nginx) are used by pulling pre-built Docker images. Just run the following command in in the `gRPC-gateway-vs-Envoy/services` directory:
 
 ```sh
 docker-compose up --build -d
@@ -33,3 +39,4 @@ Coming soon!
 👤 **Gabriel Alzate**
 
 * Github: [@GPAlzate](https://github.com/GPAlzate)
+

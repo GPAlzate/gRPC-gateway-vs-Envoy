@@ -14,7 +14,7 @@ class MyTaskSet(TaskSequence):
     @task
     def read(self):
         code = random.randint(10000000, 99999999)
-        self.client.get(f"/{code}", name=": single company")
+        self.client.get(f"/companies/{code}", name=": single company")
 
     @task
     def register(self):
@@ -31,9 +31,8 @@ class MyTaskSet(TaskSequence):
 
     @task
     def delete(self):
-        #with _lock:
         code = random.randint(10000000, 99999999)
-        self.client.delete(f"/delete/{code}", name=": remove student")
+        self.client.delete(f"/delete/{code}", name=": remove company")
 
     @task
     def update(self):

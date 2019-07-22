@@ -1,8 +1,8 @@
 version: '3'
 services:
     app:
-        container_name: housing_bridge
-        image:          housing_bridge
+        container_name: server_recruiter
+        image:          server_recruiter
         build:
             context:    .
             dockerfile: Dockerfile-python
@@ -15,8 +15,8 @@ services:
             - ./app:/service/app
 
     envoy:
-        container_name: envoy_bridge
-        image: envoyproxy/envoy-dev
+        container_name: envoy_recruiter
+        image: envoyproxy/envoy-dev:latest
         build:
             context:    .
             dockerfile: Dockerfile-envoy
@@ -27,7 +27,7 @@ services:
             - ./proto:/proto
 
     db:
-        container_name: postgres_bridge
+        container_name: postgres_recruiter
         image:          postgres
         restart:        always
         ports:
@@ -38,7 +38,7 @@ services:
             - dbvolume:/var/lib/postgresql/data
 
     nginx:
-      container_name: nginx_bridge
+      container_name: nginx_recruiter
       image:          nginx
       ports:
         - 8080:8080
