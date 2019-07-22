@@ -6,43 +6,43 @@ import "protoc-gen-swagger/options/annotations.proto";
 
 option (grpc.gateway.protoc_gen_swagger.options.openapiv2_swagger) = {
 	info: {
-		title: "Simple demo CRUD app for companies hiring on Kalibrr platform";
-		version: "1.0";
-    };
-    schemes: HTTP;
-    consumes: "application/json";
-    produces: "application/json";
+		title: "Simple demo CRUD app for companies hiring on Kalibrr platform"
+		version: "1.0"
+    }
+    schemes: HTTP
+    consumes: "application/json"
+    produces: "application/json"
 
     responses: {
-		key: "400";
+		key: "400"
 		value: {
-			description: "Returned when the ID does not exist.";
+			description: "Returned when the ID does not exist."
 			schema: {
 				json_schema: {
-					type: STRING;
+					type: STRING
 				}
 			}
 		}
     }
 
     responses: {
-        key: "502";
+        key: "502"
         value: {
-            description: "Server Error";
+            description: "Server Error"
             schema: {
                 json_schema: {
-                    type: STRING;
+                    type: STRING
                 }
             }
         }
     }
     responses: {
-        key: "503";
+        key: "503"
         value: {
-            description: "Bad Gateway";
+            description: "Bad Gateway"
             schema: {
                 json_schema: {
-                    type: STRING;
+                    type: STRING
                 }
             }
         }
@@ -78,15 +78,15 @@ service Recruiter {
         };
 
         option (grpc.gateway.protoc_gen_swagger.options.openapiv2_operation) = {
-            description: "Description Test";
-            summary: "Summary: test";
+            description: "Description Test"
+            summary: "Summary: test"
             responses: {
-                key: "200";
+                key: "200"
                 value: {
-                    description: "Overwrites YEET";
+                    description: "Overwrites YEET"
                     schema: {
                         json_schema: {
-                            type: STRING;
+                            type: STRING
                         }
                     }
                 }
@@ -102,15 +102,15 @@ service Recruiter {
         };
 
         option (grpc.gateway.protoc_gen_swagger.options.openapiv2_operation) = {
-            description: "Company with {companyCode} does not exist!";
-            summary: "Company is not in the database. Cannot delete";
+            description: "Company with {companyCode} does not exist!"
+            summary: "Company is not in the database. Cannot delete"
             responses: {
-                key: "400";
+                key: "400"
                 value: {
-                    description: "Overwrites default when deleting";
+                    description: "Overwrites default when deleting"
                     schema: {
                         json_schema: {
-                            type: STRING;
+                            type: STRING
                         }
                     }
                 }
@@ -135,15 +135,15 @@ service Recruiter {
         };
 
         option (grpc.gateway.protoc_gen_swagger.options.openapiv2_operation) = {
-            description: "Company with {companyCode} does not exist!";
-            summary: "ID has not been registered for housing. Cannot delete";
+            description: "Company with {companyCode} does not exist!"
+            summary: "ID has not been registered for housing. Cannot delete"
             responses: {
-                key: "400";
+                key: "400"
                 value: {
-                    description: "Overwrites default when deleting";
+                    description: "Overwrites default when deleting"
                     schema: {
                         json_schema: {
-                            type: STRING;
+                            type: STRING
                         }
                     }
                 }
