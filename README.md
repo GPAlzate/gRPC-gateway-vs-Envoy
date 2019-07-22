@@ -84,7 +84,7 @@ If you'd like to explore protobufs and gRPC, simply go to the `app` directory an
 
 ```sh
 export PATH=$PATH:/usr/local/go/bin
-export GOPATH=~/go"
+export GOPATH=~/go
 source ~/.profile
 ```
 
