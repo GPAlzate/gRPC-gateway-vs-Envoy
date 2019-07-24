@@ -245,7 +245,7 @@
         "operationId": "CreateCompany",
         "responses": {
           "200": {
-            "description": "Overwrites YEET",
+            "description": "Overwrites the defined 200",
             "schema": {
               "format": "string"
             }

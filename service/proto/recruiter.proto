@@ -83,7 +83,7 @@ service Recruiter {
             responses: {
                 key: "200"
                 value: {
-                    description: "Overwrites YEET"
+                    description: "Overwrites the defined 200"
                     schema: {
                         json_schema: {
                             type: STRING
