@@ -68,6 +68,10 @@ curl -d '{"companyCode":987654321, "companyName":"'\''Kalibrr'\''", "numOpenings
 http post :4748/register companyCode=987654321 companyName="'Kalibrr'" numOpenings=1 isBrokerage:=false
 ```
 
+## Mobile Demo
+
+If you'd like to see how this work smoothly with a mobile app, the CLI demo was adapted to mobile through [Flutter](https://flutter.dev/), which allows me to write only one piece of code (in `flutter_env/my_app/lib/main.dart`) yet deploy an app for both iOS and Android. Neat! This is not yet Dockerized, so you'd have to install Flutter and Dart it by following [these](https://flutter.dev/docs/get-started/install) instructions.
+
 ## Proxies (WORK IN PROGRESS)
 
 `4748` is the port number of the Envoy proxy server. However, multiple Go servers were created for testing purposes as well because testsshowed that Envoy is apparently sub-optimal. Previous load testing using [Locustio](https://locust.io/) showed that a setup of Go proxy servers load-balanced with Nginx was the best system to proxy JSON over HTTP/1.1 requests to the main gRPC server.
@@ -91,6 +95,7 @@ source ~/.profile
 #### To-do list:
 - [ ] Learn how running Go files works so that I can Dockerize the Go server(s)
 - [ ] Run tests to determine the best proxy server system
+- [ ] Dockerize the mobile app
 
 ## Author
 
