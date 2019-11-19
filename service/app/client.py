@@ -8,7 +8,18 @@ OPEN_PROMPT = "How many job openings do you have?  "
 BROK_PROMPT = "Are you a brokerage? [y/N] "
 
 _CHARS = string.ascii_letters
+
 def ClientCreateCompany(stub):
+    """ DEMO: add company to database
+
+    Adds a company to the database of hiring companies. For locust testing
+    purposes, generate a random id number to test for concurrency issues
+    
+    Args:
+        stub    - uses the stub to call server code of the same type
+    """
+
+    # testing purposes, generate random ID number
     code = random.randint(10000000,99999999)
     name = "'" + input('\n' + NAME_PROMPT) + "'"
     ops = int(input('\n'+OPEN_PROMPT))
@@ -16,6 +27,7 @@ def ClientCreateCompany(stub):
     if input('\n'+BROK_PROMPT) == 'y':
         brok = True
 
+    # make grpc request and delegate to server CreateCompany
     request = recruiter_pb2.Company(companyCode=code, companyName=name,
                                     numOpenings=ops, isBrokerage=brok)
     response = stub.CreateCompany(request)
@@ -27,7 +39,16 @@ def ClientCreateCompany(stub):
 
 
 def ClientUpdateCompany(stub):
+    """ DEMO: update existing company in database
 
+    Change any or all of company name, number, job openings, or payment package.
+    
+    Args:
+        stub    - uses the stub to call server code of the same type
+    """
+
+    # delegate to CompanyRequest to fetch a company from database, keep asking
+    # if it doesn't exist
     while 1:
         code = int(input(CODE_PROMPT))
         request = recruiter_pb2.CompanyRequest(companyCode=code)
@@ -40,9 +61,11 @@ def ClientUpdateCompany(stub):
         else:
             break
 
+    # print company name
     comp = response.company
     print(comp)
 
+    # control flow to change company attributes
     if input("Would you like to update the company name? [y/N] ") == 'y':
         request.companyName = f"'{input('NAME UPDATE: ' + NAME_PROMPT)}'"
     else:
@@ -63,6 +86,7 @@ def ClientUpdateCompany(stub):
     else:
         request.isBrokerage = comp.isBrokerage
 
+    # update company attributes in database
     request.ok=True
     response = stub.UpdateCompany(request)
 
@@ -73,6 +97,14 @@ def ClientUpdateCompany(stub):
 
 
 def ClientDeleteCompany(stub):
+    """ DEMO: delete company in database
+
+    Deletes a selected company (keyed by ID) from the database
+    
+    Args:
+        stub    - uses the stub to call server code of the same type
+    """
+
     #keep asking for provided company code to search for company to delete
     request = None
     while 1:
@@ -96,14 +128,34 @@ def ClientDeleteCompany(stub):
     print(f"\nDeleted\n{response.company}successfully.")
 
 def ClientListCompanies(stub):
+    """ DEMO: list all companies in database
+
+    Makes use of server-side streaming RPC (as opposed to simple RPC) to list
+    all companies in database
+    
+    Args:
+        stub    - uses the stub to call server code of the same type
+    """
+
+    # some void objectt since ListCompanies takes in no argument
     void = recruiter_pb2.Void()
     responses = stub.ListCompanies(void)
+
+    # iterate through RPC stream and print out company
     for response in responses:
         company = response.company
         print(f"Code: {company.companyCode} | Name: {company.companyName} | "
                 f"Openings: {company.numOpenings} | Brokerage: {company.isBrokerage}")
 
 def run():
+    """ The 'main' method to run the client demo
+
+    Opens a channel to the GRPC server app and allows the user to:
+        - create,
+        - list,
+        - edit, and
+        - delete a company from the database
+    """
     with grpc.insecure_channel('localhost:50051') as channel:
         stub = recruiter_pb2_grpc.RecruiterStub(channel)
 
